@@ -1,14 +1,5 @@
 import streamlit as st
 
-st.write("""# Introducing Ross Fu!!""")
-st.write("*Hello World!!!*")
-st.write("*Welcome to my website!!!!*")
-
-
-# Title
-st.title('Data Science Showcase')
-
-
 # Set page config
 st.set_page_config(
     page_title="Visually Stunning Website",
