@@ -34,7 +34,7 @@ with col2:
     st.write("Houston/Austin")
     st.write("https://www.linkedin.com/in/eric-ross-fu")
     st.write("ericrossfu@yahoo.com")
-    st.write("7135404528")
+    st.write("713-540-4528")
 
 
 # Machine Learning Demo
