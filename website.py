@@ -24,7 +24,7 @@ st.write("")
 
 # Image
 image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg?raw=true"
-st.image(image_url, use_column_width=True)
+st.image(image_url, width = 300)
 
 
 # Machine Learning Demo
