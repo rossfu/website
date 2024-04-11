@@ -1,63 +1,109 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import plotly.express as px
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 # Set page config
 st.set_page_config(
-    page_title="Visually Stunning Website",
-    page_icon=":art:",
+    page_title="Data Scientist Portfolio",
+    page_icon=":bar_chart:",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-# Main title
-st.title("Welcome to a Visually Stunning Website")
+# Title
+st.title("Welcome to My Data Scientist Portfolio")
 
 # Header image
 st.image("https://source.unsplash.com/random/800x300", use_column_width=True)
 
 # Subheader
-st.subheader("Discover the beauty of data visualization")
+st.subheader("Explore stunning visualizations and machine learning demos")
 
 # Introduction
 st.write(
-    "This website is designed to showcase the beauty of data visualization "
-    "and the power of storytelling through interactive graphics. Explore "
-    "the visualizations below to experience the magic of data."
+    "As a data scientist, I am passionate about leveraging data to drive "
+    "insights and create impactful solutions. Dive into the visualizations "
+    "below to experience the power of data storytelling, and explore the "
+    "machine learning demos to see predictive analytics in action."
 )
 
 # Spacer
 st.write("")
 
 # Section titles
-st.markdown("## 1. Stunning Charts")
-st.markdown("## 2. Engaging Maps")
-st.markdown("## 3. Interactive Dashboards")
+st.markdown("## 1. Stunning Visualizations")
+st.markdown("## 2. Machine Learning Demos")
 
-# Section 1: Stunning Charts
-st.markdown("### 1. Stunning Charts")
+# Section 1: Stunning Visualizations
+st.markdown("### 1. Stunning Visualizations")
 st.write(
-    "From elegant line plots to vibrant scatter plots, our visualizations are "
-    "crafted with precision to convey insights at a glance."
+    "Visualizations are a powerful tool for communicating insights "
+    "and trends in data. Explore these stunning visualizations to "
+    "gain new perspectives and uncover hidden patterns."
 )
-# Add your stunning charts here
 
-# Section 2: Engaging Maps
-st.markdown("### 2. Engaging Maps")
-st.write(
-    "Explore the world through captivating maps that bring data to life. "
-    "From choropleth maps to interactive markers, the possibilities are endless."
-)
-# Add your engaging maps here
+# Scatter plot
+st.subheader("Scatter Plot")
+data = pd.DataFrame({
+    'x': np.random.randn(100),
+    'y': np.random.randn(100)
+})
+fig = px.scatter(data, x='x', y='y')
+st.plotly_chart(fig)
 
-# Section 3: Interactive Dashboards
-st.markdown("### 3. Interactive Dashboards")
+# Histogram
+st.subheader("Histogram")
+fig = px.histogram(data, x='x', nbins=20)
+st.plotly_chart(fig)
+
+# Correlation heatmap
+st.subheader("Correlation Heatmap")
+corr = data.corr()
+fig = px.imshow(corr, color_continuous_scale='coolwarm')
+st.plotly_chart(fig)
+
+# Spacer
+st.write("")
+
+# Section 2: Machine Learning Demos
+st.markdown("### 2. Machine Learning Demos")
 st.write(
-    "Immerse yourself in our interactive dashboards that allow you to "
-    "slice and dice data effortlessly. Customize your view and uncover hidden insights."
+    "Machine learning algorithms enable us to make predictions "
+    "and decisions based on data. Explore these machine learning "
+    "demos to see predictive analytics in action."
 )
-# Add your interactive dashboards here
+
+# Iris dataset classification demo
+st.subheader("Iris Dataset Classification Demo")
+st.write(
+    "In this demo, we use a Random Forest classifier to predict the species of iris flowers "
+    "based on their sepal and petal dimensions."
+)
+
+# Load iris dataset
+iris = load_iris()
+X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
+
+# Train Random Forest classifier
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Make predictions
+y_pred = rf_classifier.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+st.write(f"Accuracy: {accuracy:.2f}")
 
 # Footer
 st.write(
-    "Thank you for visiting our visually stunning website! 🎨✨"
-    " Stay tuned for more captivating visualizations."
+    "Thank you for exploring my data scientist portfolio! 📊💻"
+    " Feel free to reach out for collaboration or project opportunities."
 )
