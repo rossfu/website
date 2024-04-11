@@ -1,12 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import plotly.express as px
-from sklearn.datasets import load_iris
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 
 # Set page config
 st.set_page_config(
@@ -57,17 +52,6 @@ data = pd.DataFrame({
 fig = px.scatter(data, x='x', y='y')
 st.plotly_chart(fig)
 
-# Histogram
-st.subheader("Histogram")
-fig = px.histogram(data, x='x', nbins=20)
-st.plotly_chart(fig)
-
-# Correlation heatmap
-st.subheader("Correlation Heatmap")
-corr = data.corr()
-fig = px.imshow(corr, color_continuous_scale='coolwarm')
-st.plotly_chart(fig)
-
 # Spacer
 st.write("")
 
@@ -85,22 +69,6 @@ st.write(
     "In this demo, we use a Random Forest classifier to predict the species of iris flowers "
     "based on their sepal and petal dimensions."
 )
-
-# Load iris dataset
-iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
-
-# Train Random Forest classifier
-rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
-rf_classifier.fit(X_train, y_train)
-
-# Make predictions
-y_pred = rf_classifier.predict(X_test)
-
-# Calculate accuracy
-accuracy = accuracy_score(y_test, y_pred)
-
-st.write(f"Accuracy: {accuracy:.2f}")
 
 # Footer
 st.write(
