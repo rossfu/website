@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
+from sklearn.datasets import load_iris
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 # Set page config
 st.set_page_config(
@@ -14,53 +17,44 @@ st.set_page_config(
 # Title
 st.title("Welcome to My Data Scientist Portfolio")
 
-# Header image
-st.image("https://source.unsplash.com/random/800x300", use_column_width=True)
-
 # Subheader
-st.subheader("Explore stunning visualizations and machine learning demos")
+st.subheader("Explore data science visuals and machine learning demo")
 
 # Introduction
 st.write(
     "As a data scientist, I am passionate about leveraging data to drive "
-    "insights and create impactful solutions. Dive into the visualizations "
-    "below to experience the power of data storytelling, and explore the "
-    "machine learning demos to see predictive analytics in action."
+    "insights and create impactful solutions. Dive into the visuals below "
+    "and explore the machine learning demo to see predictive analytics in action."
 )
 
 # Spacer
 st.write("")
 
 # Section titles
-st.markdown("## 1. Stunning Visualizations")
-st.markdown("## 2. Machine Learning Demos")
+st.markdown("## 1. Data Visualization")
+st.markdown("## 2. Machine Learning Demo")
 
-# Section 1: Stunning Visualizations
-st.markdown("### 1. Stunning Visualizations")
+# Section 1: Data Visualization
+st.markdown("### 1. Data Visualization")
 st.write(
     "Visualizations are a powerful tool for communicating insights "
-    "and trends in data. Explore these stunning visualizations to "
-    "gain new perspectives and uncover hidden patterns."
+    "and trends in data. Explore the visuals below to gain new perspectives."
 )
 
-# Scatter plot
-st.subheader("Scatter Plot")
+# Simple scatter plot
+st.subheader("Simple Scatter Plot")
 data = pd.DataFrame({
     'x': np.random.randn(100),
     'y': np.random.randn(100)
 })
-fig = px.scatter(data, x='x', y='y')
-st.plotly_chart(fig)
+st.write(data)
 
-# Spacer
-st.write("")
-
-# Section 2: Machine Learning Demos
-st.markdown("### 2. Machine Learning Demos")
+# Section 2: Machine Learning Demo
+st.markdown("### 2. Machine Learning Demo")
 st.write(
     "Machine learning algorithms enable us to make predictions "
-    "and decisions based on data. Explore these machine learning "
-    "demos to see predictive analytics in action."
+    "and decisions based on data. Explore the machine learning "
+    "demo below to see predictive analytics in action."
 )
 
 # Iris dataset classification demo
@@ -69,6 +63,22 @@ st.write(
     "In this demo, we use a Random Forest classifier to predict the species of iris flowers "
     "based on their sepal and petal dimensions."
 )
+
+# Load iris dataset
+iris = load_iris()
+X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
+
+# Train Random Forest classifier
+rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_classifier.fit(X_train, y_train)
+
+# Make predictions
+y_pred = rf_classifier.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+
+st.write(f"Accuracy: {accuracy:.2f}")
 
 # Footer
 st.write(
