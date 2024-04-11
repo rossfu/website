@@ -15,27 +15,24 @@ st.set_page_config(
 )
 
 # Title
-st.title("Welcome to My Data Scientist Portfolio")
+st.title("Eric Ross Fu")
 
 # Subheader
-st.subheader("Explore data science visuals and machine learning demo")
+st.subheader("Hello, welcome to my cloud deployed data science demo website")
 
 # Introduction
 st.write(
-    "As a data scientist, I am passionate about leveraging data to drive "
-    "insights and create impactful solutions. Dive into the visuals below "
-    "and explore the machine learning demo to see predictive analytics in action."
+    "A seasoned data scientist adept at extracting actionable insights from complex datasets to drive business decisions."
+    "Skilled in deploying scalable solutions and collaborating across interdisciplinary teams to tackle real-world challenges and optimize processes."
+    "Elevating organizational capacity for data intake, processing, and utilization to solve business challenges."
 )
 
 # Spacer
 st.write("")
 
-# Section titles
-st.markdown("## 1. Data Visualization")
-st.markdown("## 2. Machine Learning Demo")
+
 
 # Section 1: Data Visualization
-st.markdown("### 1. Data Visualization")
 st.write(
     "Visualizations are a powerful tool for communicating insights "
     "and trends in data. Explore the visuals below to gain new perspectives."
