@@ -36,9 +36,7 @@ with col2:
     st.write("713-540-4528")
 
 
-st.write(
-    "Here's a cool graph"
-)
+st.write("\n\n\nHere's a cool graph")
 
 
 # Generate sample data
