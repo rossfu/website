@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # Title
-st.title("Welcome to my data science website")
+st.title("Welcome to my data science website!")
 
 
 # Spacer
