@@ -1,9 +1,4 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import plotly.express as px
-
 
 st.write("""# Introducing Ross Fu!!""")
 st.write("*Hello World!!!*")
@@ -13,64 +8,65 @@ st.write("*Welcome to my website!!!!*")
 # Title
 st.title('Data Science Showcase')
 
-# Sidebar
-st.sidebar.title('Options')
-data_load_state = st.sidebar.text('Loading data...')
 
-# Load data
-@st.cache
-def load_data():
-    # Load your dataset here
-    # Example:
-    # data = pd.read_csv('your_dataset.csv')
-    data = pd.DataFrame({
-        'x': np.random.randn(100),
-        'y': np.random.randn(100)
-    })
-    return data
+# Set page config
+st.set_page_config(
+    page_title="Visually Stunning Website",
+    page_icon=":art:",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
-data = load_data()
-data_load_state.text('Loading data...done!')
+# Main title
+st.title("Welcome to a Visually Stunning Website")
 
-# Show raw data
-if st.sidebar.checkbox('Show raw data'):
-    st.subheader('Raw Data')
-    st.write(data)
+# Header image
+st.image("https://source.unsplash.com/random/800x300", use_column_width=True)
 
-# Data exploration
-st.sidebar.subheader('Data Exploration')
+# Subheader
+st.subheader("Discover the beauty of data visualization")
 
-# Scatter plot
-if st.sidebar.checkbox('Show scatter plot'):
-    st.subheader('Scatter Plot')
-    fig = px.scatter(data, x='x', y='y')
-    st.plotly_chart(fig)
+# Introduction
+st.write(
+    "This website is designed to showcase the beauty of data visualization "
+    "and the power of storytelling through interactive graphics. Explore "
+    "the visualizations below to experience the magic of data."
+)
 
-# Histogram
-if st.sidebar.checkbox('Show histogram'):
-    st.subheader('Histogram')
-    fig = px.histogram(data, x='x', nbins=20)
-    st.plotly_chart(fig)
+# Spacer
+st.write("")
 
-# Correlation heatmap
-if st.sidebar.checkbox('Show correlation heatmap'):
-    st.subheader('Correlation Heatmap')
-    corr = data.corr()
-    fig = px.imshow(corr, color_continuous_scale='coolwarm')
-    st.plotly_chart(fig)
+# Section titles
+st.markdown("## 1. Stunning Charts")
+st.markdown("## 2. Engaging Maps")
+st.markdown("## 3. Interactive Dashboards")
 
-# Machine Learning
-st.sidebar.title('Machine Learning')
+# Section 1: Stunning Charts
+st.markdown("### 1. Stunning Charts")
+st.write(
+    "From elegant line plots to vibrant scatter plots, our visualizations are "
+    "crafted with precision to convey insights at a glance."
+)
+# Add your stunning charts here
 
-# ML model training
-if st.sidebar.checkbox('Train ML Model'):
-    st.subheader('Train ML Model')
-    # Your machine learning model training code goes here
+# Section 2: Engaging Maps
+st.markdown("### 2. Engaging Maps")
+st.write(
+    "Explore the world through captivating maps that bring data to life. "
+    "From choropleth maps to interactive markers, the possibilities are endless."
+)
+# Add your engaging maps here
 
-# Conclusion
-st.sidebar.title('Conclusion')
-st.sidebar.write('Thanks for exploring!')
+# Section 3: Interactive Dashboards
+st.markdown("### 3. Interactive Dashboards")
+st.write(
+    "Immerse yourself in our interactive dashboards that allow you to "
+    "slice and dice data effortlessly. Customize your view and uncover hidden insights."
+)
+# Add your interactive dashboards here
 
-# About
-st.sidebar.title('About')
-st.sidebar.write('This app is a showcase of my data science abilities.')
+# Footer
+st.write(
+    "Thank you for visiting our visually stunning website! 🎨✨"
+    " Stay tuned for more captivating visualizations."
+)
