@@ -31,7 +31,6 @@ with col1:
 
 with col2:
     st.subheader("Data Scientist @ Avance Biosciences")
-    st.write("Houston/Austin")
     st.write("https://www.linkedin.com/in/eric-ross-fu")
     st.write("ericrossfu@yahoo.com")
     st.write("713-540-4528")
