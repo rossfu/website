@@ -23,7 +23,7 @@ st.write("")
 
 
 # Image
-image_url = "https://raw.githubusercontent.com/rossfu/website/blob/main/headshot.jpg"
+image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg?raw=true"
 st.image(image_url, use_column_width=True)
 
 
