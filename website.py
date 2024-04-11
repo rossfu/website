@@ -27,7 +27,7 @@ col1,col2 = st.columns(2)
 
 with col1:
     image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg?raw=true"
-    st.image(image_url, width = 500)
+    st.image(image_url, width = 350)
 
 with col2:
     st.subheader("Data Scientist @ Avance Biosciences")
