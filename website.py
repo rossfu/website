@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score
 
 # Set page config
 st.set_page_config(
-    page_title="Data Scientist Portfolio",
+    page_title="Eric Ross Fu's Data Science Website",
     page_icon=":bar_chart:",
     layout="wide",
     initial_sidebar_state="collapsed",
