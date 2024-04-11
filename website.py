@@ -15,39 +15,17 @@ st.set_page_config(
 )
 
 # Title
-st.title("Eric Ross Fu")
+st.title("Hello, welcome to my cloud deployed data science website")
 
-# Subheader
-st.subheader("Hello, welcome to my cloud deployed data science demo website")
-
-# Introduction
-st.write(
-    "A seasoned data scientist adept at extracting actionable insights from complex datasets to drive business decisions."
-    "Skilled in deploying scalable solutions and collaborating across interdisciplinary teams to tackle real-world challenges and optimize processes."
-    "Elevating organizational capacity for data intake, processing, and utilization to solve business challenges."
-)
 
 # Spacer
 st.write("")
 
 
 
-# Section 1: Data Visualization
-st.write(
-    "Visualizations are a powerful tool for communicating insights "
-    "and trends in data. Explore the visuals below to gain new perspectives."
-)
 
-# Simple scatter plot
-st.subheader("Simple Scatter Plot")
-data = pd.DataFrame({
-    'x': np.random.randn(100),
-    'y': np.random.randn(100)
-})
-st.write(data)
-
-# Section 2: Machine Learning Demo
-st.markdown("### 2. Machine Learning Demo")
+# Machine Learning Demo
+st.markdown("### Machine Learning Demo")
 st.write(
     "Machine learning algorithms enable us to make predictions "
     "and decisions based on data. Explore the machine learning "
