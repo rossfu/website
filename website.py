@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # Title
-st.title("Welcome to Eric Ross Fu's data science website!")
+st.title("Hello, welcome to Eric Ross Fu's website!")
 
 
 # Spacer
@@ -31,6 +31,7 @@ with col1:
 
 with col2:
     st.subheader("Data Scientist @ Avance Biosciences")
+    st.write("Houston/Austin")
     st.write("https://www.linkedin.com/in/eric-ross-fu")
     st.write("ericrossfu@yahoo.com")
     st.write("7135404528")
