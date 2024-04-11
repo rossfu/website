@@ -1,14 +1,14 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import plotly.express as px
+
 
 st.write("""# Introducing Ross Fu!!""")
 st.write("*Hello World!!!*")
 st.write("*Welcome to my website!!!!*")
 
-import streamlit as st
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import plotly.express as px
 
 # Title
 st.title('Data Science Showcase')
@@ -64,4 +64,13 @@ st.sidebar.title('Machine Learning')
 
 # ML model training
 if st.sidebar.checkbox('Train ML Model'):
-    st.subheader('T
+    st.subheader('Train ML Model')
+    # Your machine learning model training code goes here
+
+# Conclusion
+st.sidebar.title('Conclusion')
+st.sidebar.write('Thanks for exploring!')
+
+# About
+st.sidebar.title('About')
+st.sidebar.write('This app is a showcase of my data science abilities.')
