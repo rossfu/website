@@ -30,7 +30,7 @@ with col1:
     st.image(image_url, width = 300)
 
 with col2:
-    st.subheader("Data Scientist/Engineer @ Avance Biosciences")
+    st.subheader("Data Scientist @ Avance Biosciences")
     st.write("https://www.linkedin.com/in/eric-ross-fu")
     st.write("ericrossfu@yahoo.com")
     st.write("7135404528")
