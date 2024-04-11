@@ -35,16 +35,6 @@ with col2:
     st.write("713-540-4528")
 
 
-# Machine Learning Demo
-st.markdown("### Machine Learning Demo")
-st.write(
-    "Machine learning algorithms enable us to make predictions "
-    "and decisions based on data. Explore the machine learning "
-    "demo below to see predictive analytics in action."
-)
-
-# Iris dataset classification demo
-st.subheader("Iris Dataset Classification Demo")
 st.write(
     "In this demo, we use a Random Forest classifier to predict the species of iris flowers "
     "based on their sepal and petal dimensions."
@@ -52,6 +42,7 @@ st.write(
 
 # Load iris dataset
 iris = load_iris()
+st.write(print(iris.head())
 X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
 
 # Train Random Forest classifier
