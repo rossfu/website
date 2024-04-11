@@ -21,10 +21,19 @@ st.title("Welcome to my data science website!")
 # Spacer
 st.write("")
 
+# Create two columns
+col1, col2 = st.beta_columns(2)
 
-# Image
-image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg?raw=true"
-st.image(image_url, width = 300)
+with col1:
+    # Image
+    image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg?raw=true"
+    st.image(image_url, width = 300)
+
+with col2:
+    st.subheader("Eric Ross Fu")
+    st.write("Data Scientist/Engineer @ Avance Biosciences")
+    st.write("ericrossfu@yahoo.com")
+    st.write("7135404528")
 
 
 # Machine Learning Demo
