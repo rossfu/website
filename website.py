@@ -36,28 +36,42 @@ with col2:
 
 
 st.write(
-    "In this demo, we use a Random Forest classifier to predict the species of iris flowers "
-    "based on their sepal and petal dimensions."
+    "Here's a cool graph"
 )
 
-# Load iris dataset
-iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
 
-# Train Random Forest classifier
-rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
-rf_classifier.fit(X_train, y_train)
+# Generate sample data
+np.random.seed(0)
+n_points = 100
+x = np.random.rand(n_points)
+y = np.random.rand(n_points)
+z = np.random.rand(n_points)
+color = np.random.rand(n_points)
+size = np.random.rand(n_points) * 30
 
-# Make predictions
-y_pred = rf_classifier.predict(X_test)
+# Create 3D scatter plot
+fig = go.Figure(data=[go.Scatter3d(
+    x=x,
+    y=y,
+    z=z,
+    mode='markers',
+    marker=dict(
+        size=size,
+        color=color,
+        opacity=0.8,
+        colorscale='Viridis'
+    )
+)])
 
-# Calculate accuracy
-accuracy = accuracy_score(y_test, y_pred)
-
-st.write(f"Accuracy: {accuracy:.2f}")
-
-# Footer
-st.write(
-    "Thank you for exploring my data scientist portfolio! 📊💻"
-    " Feel free to reach out for collaboration or project opportunities."
+# Customize layout
+fig.update_layout(
+    scene=dict(
+        xaxis_title='X-axis',
+        yaxis_title='Y-axis',
+        zaxis_title='Z-axis'
+    ),
+    margin=dict(l=0, r=0, b=0, t=0)
 )
+
+# Display plot
+st.plotly_chart(fig)
