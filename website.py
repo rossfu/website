@@ -22,6 +22,9 @@ st.title("Welcome to my data science website!")
 st.write("")
 
 
+# Image
+image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg"
+st.image(image_url, use_column_width=True)
 
 
 # Machine Learning Demo
