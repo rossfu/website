@@ -145,15 +145,7 @@ def send_email(name, email, job_description):
 
 
 # Contact me Function
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.title('Contact Me')
-
-if st.button('Contact Me'):
+def contact_me():
     st.write('Please provide the following details:')
     
     # Get user input for name
@@ -171,3 +163,14 @@ if st.button('Contact Me'):
         
         # Display confirmation
         st.write('Thank you for reaching out! Your inquiry has been sent.')
+
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.title('Contact Me')
+
+if st.button('Contact Me'):
+    contact_me()
