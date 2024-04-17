@@ -145,25 +145,6 @@ def send_email(name, email, job_description):
 
 
 # Contact me Function
-def contact_me():
-    st.write('Please provide the following details:')
-    
-    # Get user input for name
-    name = st.text_input('Name:', '')
-
-    # Get user input for email
-    email = st.text_input('Email Address:', '')
-
-    # Get user input for job opportunity description
-    job_description = st.text_area('Description of Job Opportunity:', '')
-
-    if st.button('Send'):
-        # Send email with user details
-        send_email(name, email, job_description)
-        
-        # Display confirmation
-        st.write('Thank you for reaching out! Your inquiry has been sent.')
-
 st.write("")
 st.write("")
 st.write("")
@@ -171,6 +152,31 @@ st.write("")
 st.write("")
 st.write("")
 st.title('Contact Me')
+contact_button = st.button('Contact Me')
 
-if st.button('Contact Me'):
-    contact_me()
+if 'name' not in st.session_state:
+    st.session_state.name = ''
+if 'email' not in st.session_state:
+    st.session_state.email = ''
+if 'job_description' not in st.session_state:
+    st.session_state.job_description = ''
+
+if contact_button:
+    st.write('Please provide the following details:')
+    
+    # Get user input for name
+    st.session_state.name = st.text_input('Name:', st.session_state.name)
+
+    # Get user input for email
+    st.session_state.email = st.text_input('Email Address:', st.session_state.email)
+
+    # Get user input for job opportunity description
+    st.session_state.job_description = st.text_area('Description of Job Opportunity:', st.session_state.job_description)
+
+    if st.button('Send'):
+        # Send email with user details
+        send_email(st.session_state.name, st.session_state.email, st.session_state.job_description)
+        
+        # Display confirmation
+        st.write('Thank you for reaching out! Your inquiry has been sent.')
+
