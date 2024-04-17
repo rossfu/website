@@ -125,7 +125,7 @@ def send_email(name, email, job_description):
 
     # Lets send a reply
     subject2 = "Thanks for emailing Eric Ross Fu!"
-    message2 = f"Hey {name},\n\nI appreciate hearing from you. \nI have received an email with your inquiry.\nThe best way to reach me is 7135404528.\n\n\nBest,\nEric Ross Fu\nData Scientist at Avance Biosciences"
+    message2 = f"Hey {name},\n\nI appreciate hearing from you.\nThis is an automated reply.\nThe best way to reach me is 7135404528.\n\n\nBest,\nEric Ross Fu\nData Scientist at Avance Biosciences"
     
     # Create a MIME message
     msg = MIMEMultipart()
