@@ -17,7 +17,7 @@ st.set_page_config(
 
 
 # Play background music
-audio_file = open('https://raw.githubusercontent.com/rossfu/website/main/Slimed_In.mp3', 'rb')
+audio_file = open('Slimed_In.mp3', 'rb')
 st.audio(audio_file, format='audio/mp3', start_time=0)
 
 
