@@ -148,21 +148,21 @@ def send_email(name, email, job_description):
 
 st.title('Contact Me')
     
-    if st.button('Contact Me'):
-        st.write('Please provide the following details:')
+if st.button('Contact Me'):
+    st.write('Please provide the following details:')
+    
+    # Get user input for name
+    name = st.text_input('Name:', '')
+
+    # Get user input for email
+    email = st.text_input('Email Address:', '')
+
+    # Get user input for job opportunity description
+    job_description = st.text_area('Description of Job Opportunity:', '')
+
+    if st.button('Send'):
+        # Send email with user details
+        send_email(name, email, job_description)
         
-        # Get user input for name
-        name = st.text_input('Name:', '')
-
-        # Get user input for email
-        email = st.text_input('Email Address:', '')
-
-        # Get user input for job opportunity description
-        job_description = st.text_area('Description of Job Opportunity:', '')
-
-        if st.button('Send'):
-            # Send email with user details
-            send_email(name, email, job_description)
-            
-            # Display confirmation
-            st.write('Thank you for reaching out! Your inquiry has been sent.')
+        # Display confirmation
+        st.write('Thank you for reaching out! Your inquiry has been sent.')
