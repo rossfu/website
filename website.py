@@ -11,7 +11,7 @@ from email.mime.multipart import MIMEMultipart
 # Set page config
 st.set_page_config(
     page_title="Eric Ross Fu's Data Science Website",
-    page_icon=":bar_chart:",
+    page_icon="https://github.com/rossfu/website/raw/main/favicon-16x16.png",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
