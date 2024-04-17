@@ -140,6 +140,10 @@ def send_email(name, email, job_description):
         server.login(sender_email, app_specific_password)
         server.sendmail(sender_email, person_who_inquired_email, msg.as_string())
 
+    
+    # Display confirmation
+    st.write('Thank you for reaching out! Your inquiry has been sent.')
+
 
 
 
@@ -166,6 +170,3 @@ job_description = st.text_area('Description of Job Opportunity:', '')
 if st.button('Send'):
     # Send email with user details
     send_email(name, email, job_description)
-    
-    # Display confirmation
-    st.write('Thank you for reaching out! Your inquiry has been sent.')
