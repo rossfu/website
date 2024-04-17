@@ -7,6 +7,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
 # Set page config
 st.set_page_config(
     page_title="Eric Ross Fu's Data Science Website",
@@ -16,8 +21,6 @@ st.set_page_config(
 )
 
 
-
-
 # Title
 st.title("Hello, welcome to Eric Ross Fu's website!")
 
@@ -25,6 +28,7 @@ st.title("Hello, welcome to Eric Ross Fu's website!")
 # Play background music
 audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
 st.audio(audio_file, format='audio/mp3', start_time=0)
+
 
 # Spacer
 st.write("")
@@ -84,3 +88,81 @@ fig.update_layout(
 
 # Display plot
 st.plotly_chart(fig)
+
+
+
+
+# Email me function
+
+def send_email(name, email, job_description):
+    # Email configurations
+    sender_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
+    receiver_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
+
+    person_who_inquired_email = email
+    
+    app_specific_password = "qshbgubfeexbmekh"  # Replace with your Yahoo app-specific password
+    smtp_server = "smtp.mail.yahoo.com"  # Yahoo SMTP server
+    smtp_port = 587  # Use 587 for TLS/STARTTLS or 465 for SSL
+    
+    # Email content
+    subject = "Streamlit Contact Request!"
+    message = f"Name: {name}\nEmail: {email}\nJob Opportunity Description:\n{job_description}"
+    
+    # Create a MIME message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(message, 'plain'))
+    
+    # Send email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Enable TLS
+        server.login(sender_email, app_specific_password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+
+
+    # Lets send a reply
+    subject2 = "Thanks for emailing Eric Ross Fu!"
+    message2 = f"Hey {name},\n\nI appreciate hearing from you. \nThis is an automated reply. \nThe best way to reach me is 7135404528.\n\n\nBest,\nEric Ross Fu\nData Scientist at Avance Biosciences"
+    
+    # Create a MIME message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = person_who_inquired_email
+    msg['Subject'] = subject2
+    msg.attach(MIMEText(message2, 'plain'))
+    
+    # Send email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Enable TLS
+        server.login(sender_email, app_specific_password)
+        server.sendmail(sender_email, person_who_inquired_email, msg.as_string())
+
+
+
+
+
+# Contact me Function
+
+st.title('Contact Me')
+    
+    if st.button('Contact Me'):
+        st.write('Please provide the following details:')
+        
+        # Get user input for name
+        name = st.text_input('Name:', '')
+
+        # Get user input for email
+        email = st.text_input('Email Address:', '')
+
+        # Get user input for job opportunity description
+        job_description = st.text_area('Description of Job Opportunity:', '')
+
+        if st.button('Send'):
+            # Send email with user details
+            send_email(name, email, job_description)
+            
+            # Display confirmation
+            st.write('Thank you for reaching out! Your inquiry has been sent.')
