@@ -145,21 +145,27 @@ def send_email(name, email, job_description):
 
 
 # Contact me Function
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
 st.title('Contact Me')
 
 if st.button('Contact Me'):
-    st.sidebar.title('Please provide the following details:')
+    st.write('Please provide the following details:')
     
     # Get user input for name
-    name = st.sidebar.text_input('Name:', '')
+    name = st.text_input('Name:', '')
 
     # Get user input for email
-    email = st.sidebar.text_input('Email Address:', '')
+    email = st.text_input('Email Address:', '')
 
     # Get user input for job opportunity description
-    job_description = st.sidebar.text_area('Description of Job Opportunity:', '')
+    job_description = st.text_area('Description of Job Opportunity:', '')
 
-    if st.sidebar.button('Send'):
+    if st.button('Send'):
         # Send email with user details
         send_email(name, email, job_description)
         
