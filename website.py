@@ -22,8 +22,8 @@ st.title("Hello, welcome to Eric Ross Fu's website!")
 
 
 # Play background music
- audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
- st.audio(audio_file, format='audio/mp3', start_time=0)
+audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
+st.audio(audio_file, format='audio/mp3', start_time=0)
 
 
 
