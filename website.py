@@ -22,6 +22,7 @@ st.set_page_config(
 
 
 # Convert MP3 to base64
+import base64
 with open("Future, Metro Boomin - Slimed In (Official Audio).mp3", "rb") as audio_file:
     encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
 
