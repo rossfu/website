@@ -16,23 +16,6 @@ st.set_page_config(
 )
 
 
-# Play background music
-#audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
-#st.audio(audio_file, format='audio/mp3', start_time=0)
-
-
-# Convert MP3 to base64
-import base64
-with open("Future, Metro Boomin - Slimed In (Official Audio).mp3", "rb") as audio_file:
-    encoded_string = base64.b64encode(audio_file.read()).decode('utf-8')
-
-# Embed background music with autoplay
-audio_html = f'''
-<audio autoplay>
-    <source src="data:audio/mp3;base64,{encoded_string}" type="audio/mp3">
-    Your browser does not support the audio element.
-</audio>
-'''
 
 
 # Title
@@ -59,6 +42,9 @@ with col2:
 st.write("")
 st.write("")
 st.write("")
+# Play background music
+audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
+st.audio(audio_file, format='audio/mp3', start_time=0)
 st.write("Here's a cool graph")
 
 
