@@ -16,18 +16,9 @@ st.set_page_config(
 )
 
 
-# Background music
-def play_music(file_path):
-    audio_html = f'''
-    <audio autoplay loop>
-        <source src="{file_path}" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
-    '''
-    st.markdown(audio_html, unsafe_allow_html=True)
-
-
-play_music('https://raw.githubusercontent.com/rossfu/website/main/Slimed_In.mp3')
+# Play background music
+audio_file = open('https://raw.githubusercontent.com/rossfu/website/main/Slimed_In.mp3', 'rb')
+st.audio(audio_file, format='audio/mp3', start_time=0)
 
 
 # Title
