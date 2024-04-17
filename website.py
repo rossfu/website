@@ -22,6 +22,10 @@ st.set_page_config(
 st.title("Hello, welcome to Eric Ross Fu's website!")
 
 
+# Play background music
+audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
+st.audio(audio_file, format='audio/mp3', start_time=0)
+
 # Spacer
 st.write("")
 
@@ -42,9 +46,6 @@ with col2:
 st.write("")
 st.write("")
 st.write("")
-# Play background music
-audio_file = open('Future, Metro Boomin - Slimed In (Official Audio).mp3', 'rb')
-st.audio(audio_file, format='audio/mp3', start_time=0)
 st.write("Here's a cool graph")
 
 
