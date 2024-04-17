@@ -91,7 +91,7 @@ st.plotly_chart(fig)
 
 # Email me function
 
-def send_email(name, email, job_description):
+def send_email(name, email, input_message):
     # Email configurations
     sender_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
     receiver_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
@@ -104,7 +104,7 @@ def send_email(name, email, job_description):
     
     # Email content
     subject = "Streamlit Contact Request!"
-    message = f"Name: {name}\nEmail: {email}\nJob Opportunity Description:\n\n{job_description}"
+    message = f"Name: {name}\nEmail: {email}\nJob Opportunity Description:\n\n{input_message}"
     
     # Create a MIME message
     msg = MIMEMultipart()
@@ -161,9 +161,9 @@ name = st.text_input('Name:', '')
 email = st.text_input('Email Address:', '')
 
 # Get user input for job opportunity description
-job_description = st.text_area('Description of Job Opportunity:', '')
+input_message = st.text_area('Message:', '')
 
 # Add a "Send" button to send the email
 if st.button('Send'):
     # Send email with user details
-    send_email(name, email, job_description)
+    send_email(name, email, input_message)
