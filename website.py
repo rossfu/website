@@ -87,8 +87,10 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 
-
-st.write("\n\n\nFeatures in Progress.... Download Resume, Generative Language Model to answer questions about me, Machine Learning Demos, Video Blog")
+st.write("")
+st.write("")
+st.write("")
+st.write("Features in Progress.... Download Resume, Generative Language Model to answer questions about me, Machine Learning Demos, Video Blog")
 
 
 # Email me function
