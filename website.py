@@ -18,7 +18,7 @@ st.set_page_config(
 
 
 # Title
-st.title("Hello, welcome to Eric Ross Fu's website!")
+st.title("Hello, welcome to Eric Fu's website!")
 
 
 # Play background music
@@ -47,7 +47,7 @@ with col2:
 st.write("")
 st.write("")
 st.write("")
-st.write("Here's a cool graph")
+st.write("Data Visualization Demo")
 
 
 # Generate sample data
@@ -87,6 +87,8 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 
+
+st.write("Features in Progress.... Download Resume, GenAI chatbot to answer questions about me, Machine Learning Demos, Video Blog")
 
 
 # Email me function
