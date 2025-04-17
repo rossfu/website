@@ -86,12 +86,22 @@ fig.update_layout(
 # Display plot
 st.plotly_chart(fig)
 
-
 st.write("")
 st.write("")
 st.write("")
-st.write("Features in Progress.... Download Resume, Generative Language Model to answer questions about me, Machine Learning Demos, Video Blog")
-
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("Features in Progress: Download Resume, Generative Language Model to answer questions about me, APIs to access Machine Learning projects, Video Blog")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
 
 # Email me function
 
