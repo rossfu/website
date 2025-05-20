@@ -95,93 +95,8 @@ st.write("")
 st.write("")
 st.write("")
 st.write("")
-st.write("Features in Progress: Download Resume, Generative Language Model to answer questions about me, APIs to access Machine Learning projects, Video Blog")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
 
-# Email me function
-
-def send_email(name, email, input_message):
-    # Email configurations
-    sender_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
-    receiver_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
-
-    person_who_inquired_email = email
-    
-    app_specific_password = "qshbgubfeexbmekh"  # Replace with your Yahoo app-specific password
-    smtp_server = "smtp.mail.yahoo.com"  # Yahoo SMTP server
-    smtp_port = 587  # Use 587 for TLS/STARTTLS or 465 for SSL
-    
-    # Email content
-    subject = "Streamlit Contact Request!"
-    message = f"Name: {name}\nEmail: {email}\nJob Opportunity Description:\n\n{input_message}"
-    
-    # Create a MIME message
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    msg['Subject'] = subject
-    msg.attach(MIMEText(message, 'plain'))
-    
-    # Send email
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        server.starttls()  # Enable TLS
-        server.login(sender_email, app_specific_password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
-
-
-    # Lets send a reply
-    subject2 = "Thanks for emailing Eric Ross Fu!"
-    message2 = f"Hey {name},\n\nI appreciate hearing from you.\nThis is an automated reply.\nThe best way to reach me is 7135404528.\n\n\nBest,\nEric Ross Fu\nData Scientist at Avance Biosciences"
-    
-    # Create a MIME message
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = person_who_inquired_email
-    msg['Subject'] = subject2
-    msg.attach(MIMEText(message2, 'plain'))
-    
-    # Send email
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        server.starttls()  # Enable TLS
-        server.login(sender_email, app_specific_password)
-        server.sendmail(sender_email, person_who_inquired_email, msg.as_string())
-
-    
-    # Display confirmation
-    st.write('Thank you for reaching out! Your inquiry has been sent.')
-
-
-
-
-
-# Contact me Function
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.title('Contact Me')
-    
-# Get user input for name
-name = st.text_input('Name:', '')
-
-# Get user input for email
-email = st.text_input('Email Address:', '')
-
-# Get user input for job opportunity description
-input_message = st.text_area('Message:', '')
-
-# Add a "Send" button to send the email
-if st.button('Send'):
-    # Send email with user details
-    send_email(name, email, input_message)
-
+# Features in Progress: Download Resume, Generative Language Model to answer questions about me, APIs to access Machine Learning projects, Video Blog
 
 
 
@@ -247,3 +162,90 @@ if question:
     st.markdown(f"### Answer:\n{answer}")
 
 #########################################################################################################################
+
+
+
+# Email me function
+
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+def send_email(name, email, input_message):
+    # Email configurations
+    sender_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
+    receiver_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
+
+    person_who_inquired_email = email
+    
+    app_specific_password = "qshbgubfeexbmekh"  # Replace with your Yahoo app-specific password
+    smtp_server = "smtp.mail.yahoo.com"  # Yahoo SMTP server
+    smtp_port = 587  # Use 587 for TLS/STARTTLS or 465 for SSL
+    
+    # Email content
+    subject = "Streamlit Contact Request!"
+    message = f"Name: {name}\nEmail: {email}\nJob Opportunity Description:\n\n{input_message}"
+    
+    # Create a MIME message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = receiver_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(message, 'plain'))
+    
+    # Send email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Enable TLS
+        server.login(sender_email, app_specific_password)
+        server.sendmail(sender_email, receiver_email, msg.as_string())
+
+
+    # Lets send a reply
+    subject2 = "Thanks for emailing Eric Ross Fu!"
+    message2 = f"Hey {name},\n\nI appreciate hearing from you.\nThis is an automated reply.\nThe best way to reach me is 7135404528.\n\n\nBest,\nEric Ross Fu\nData Scientist at Avance Biosciences"
+    
+    # Create a MIME message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = person_who_inquired_email
+    msg['Subject'] = subject2
+    msg.attach(MIMEText(message2, 'plain'))
+    
+    # Send email
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()  # Enable TLS
+        server.login(sender_email, app_specific_password)
+        server.sendmail(sender_email, person_who_inquired_email, msg.as_string())
+
+    
+    # Display confirmation
+    st.write('Thank you for reaching out! Your inquiry has been sent.')
+
+
+# Contact me Function
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.write("")
+st.title('Contact Me')
+    
+# Get user input for name
+name = st.text_input('Name:', '')
+
+# Get user input for email
+email = st.text_input('Email Address:', '')
+
+# Get user input for job opportunity description
+input_message = st.text_area('Message:', '')
+
+# Add a "Send" button to send the email
+if st.button('Send'):
+    # Send email with user details
+    send_email(name, email, input_message)
