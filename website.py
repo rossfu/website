@@ -181,3 +181,69 @@ input_message = st.text_area('Message:', '')
 if st.button('Send'):
     # Send email with user details
     send_email(name, email, input_message)
+
+
+
+
+
+# AI #########################################################################################################################
+import os
+import requests
+from llama_cpp import Llama
+
+# --- Model info ---
+MODEL_URL = "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf"
+MODEL_DIR = "models"
+MODEL_PATH = os.path.join(MODEL_DIR, "tinyllama.Q2_K.gguf")
+
+# Download model if not exists
+def download_model():
+    if not os.path.exists(MODEL_DIR):
+        os.makedirs(MODEL_DIR)
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner("⏳ Downloading model (~400MB). This may take a while..."):
+            with requests.get(MODEL_URL, stream=True) as r:
+                r.raise_for_status()
+                with open(MODEL_PATH, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+        st.success("✅ Model downloaded!")
+
+@st.cache_resource
+def load_llama_model():
+    return Llama(model_path=MODEL_PATH, n_threads=4)
+
+@st.cache_data
+def load_resume_text():
+    with open("txtresume.txt", "r", encoding="utf-8") as f:
+        return f.read()
+
+def retrieve_relevant_text(question, resume_text, max_len=500):
+    # Simple retrieval - you can improve with embeddings & vector search
+    return resume_text[:max_len]
+
+def generate_answer(llm, question, context):
+    prompt = (
+        "You are a helpful assistant. Use the following resume snippet to answer the question.\n\n"
+        f"Resume snippet:\n{context}\n\n"
+        f"Question: {question}\n"
+        "Answer:"
+    )
+    output = llm(prompt, max_tokens=256, stop=["\n\n"])
+    return output["choices"][0]["text"].strip()
+
+# --- Streamlit app ---
+st.title("🤖 Resume Q&A Chatbot with TinyLlama")
+
+download_model()
+llm = load_llama_model()
+resume_text = load_resume_text()
+
+question = st.text_input("Ask a question about my resume:")
+
+if question:
+    context = retrieve_relevant_text(question, resume_text)
+    answer = generate_answer(llm, question, context)
+    st.markdown(f"### Answer:\n{answer}")
+
+#########################################################################################################################
