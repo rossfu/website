@@ -92,12 +92,12 @@ def load_llm():
     return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
 # UI
-st.title("Ask my AI a question about my resume")
+st.title("Ask AI a question about my resume")
 
 model_loaded = st.session_state.get("model_loaded", False)
 
 # Button to load model
-if not model_loaded and st.button("🚀 Load Model"):
+if not model_loaded and st.button("Yes Please"):
     with st.spinner("Loading model and embedding resume..."):
         rag_model = load_llm()
         embedder, chunks, index = load_resume_data()
@@ -121,7 +121,7 @@ if st.session_state.get("model_loaded", False):
         st.markdown("### 📌 Answer")
         st.write(answer)
 else:
-    st.info("Click 'Load Model' to begin.")
+    st.info("Click the button to begin.")
 
 #########################################################################################################################
 
