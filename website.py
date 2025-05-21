@@ -107,17 +107,30 @@ else:
             D, I = st.session_state.index.search(user_input_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
-                "You are a friendly assistant who helps answer questions about a resume.\n"
-                "If the input is a question related to the resume, answer using ONLY the provided resume context.\n"
-                "If the input is not a question or cannot be answered from the resume, respond naturally and conversationally, "
-                "admitting if you don't know something.\n"
-                "Eric Ross Fu is the name of the resume owner\n\n"
-                f"Resume Context: {context}\n\n"
-                f"User Input: {user_input}\nResponse:"
+                "You are a helpful and conversational AI assistant with access to the user's resume below.\n"
+                "Use ONLY the resume information to answer questions accurately.\n"
+                "If the input is not a question or you do not have enough information, respond naturally and admit you don't know instead of repeating or making things up.\n"
+                "Avoid repeating the question or yourself.\n\n"
+                f"Resume Context:\n{context}\n\n"
+                f"User Input: {user_input}\n"
+                "Answer:"
             )
-            answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
-        st.markdown("### 📌 Answer")
-        st.write(answer)
+            
+            answer = st.session_state.rag_model(
+                prompt,
+                max_length=150,
+                num_beams=5,
+                no_repeat_ngram_size=3,
+                early_stopping=True,
+                temperature=0.7,
+            )[0]['generated_text']
+
+# If the model's output is very similar to the input or seems repetitive, fallback to a polite "I don't know"
+if user_input.lower().strip() in answer.lower():
+    answer = "I'm not sure about that based on my resume, but feel free to ask me something else!"
+
+st.markdown("### 📌 Answer")
+st.write(answer)
 
 #########################################################################################################################
 
