@@ -111,32 +111,38 @@ MODEL_URL = "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resol
 MODEL_DIR = "models"
 MODEL_PATH = os.path.join(MODEL_DIR, "tinyllama.Q2_K.gguf")
 
-# Download model if not exists
+# --- Download GGUF model if not already downloaded ---
 def download_model():
     if not os.path.exists(MODEL_DIR):
         os.makedirs(MODEL_DIR)
     if not os.path.exists(MODEL_PATH):
-        with st.spinner("⏳ Downloading model (~400MB). This may take a while..."):
-            with requests.get(MODEL_URL, stream=True) as r:
-                r.raise_for_status()
-                with open(MODEL_PATH, "wb") as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
+        with st.spinner("⏳ Downloading model..."):
+            response = requests.get(MODEL_URL, stream=True)
+            with open(MODEL_PATH, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
         st.success("✅ Model downloaded!")
 
-@st.cache_resource
-def load_llama_model():
-    return Llama(model_path=MODEL_PATH, n_threads=4)
+# --- Load model only when user clicks a button ---
+def load_model():
+    if not os.path.exists(MODEL_PATH):
+        download_model()
+    with st.spinner("🧠 Loading model..."):
+        llm = Llama(model_path=MODEL_PATH, n_threads=4)
+        st.session_state.llm = llm
+        st.success("✅ Model loaded and ready!")
 
+# --- Load resume ---
 @st.cache_data
 def load_resume_text():
     with open("txtresume.txt", "r", encoding="utf-8") as f:
         return f.read()
 
+# --- Simple retrieval (placeholder for now) ---
 def retrieve_relevant_text(question, resume_text, max_len=500):
-    # Simple retrieval - you can improve with embeddings & vector search
     return resume_text[:max_len]
 
+# --- LLM inference ---
 def generate_answer(llm, question, context):
     prompt = (
         "You are a helpful assistant. Use the following resume snippet to answer the question.\n\n"
@@ -147,20 +153,27 @@ def generate_answer(llm, question, context):
     output = llm(prompt, max_tokens=256, stop=["\n\n"])
     return output["choices"][0]["text"].strip()
 
-# --- Streamlit app ---
-st.title("🤖 Resume Q&A Chatbot with TinyLlama")
+# --- Streamlit App ---
+st.title("🤖 Resume Q&A with TinyLlama")
 
-download_model()
-llm = load_llama_model()
+# Load resume
 resume_text = load_resume_text()
 
-question = st.text_input("Ask a question about my resume:")
+# --- Model loading UI ---
+if "llm" not in st.session_state:
+    st.session_state.llm = None
 
-if question:
-    context = retrieve_relevant_text(question, resume_text)
-    answer = generate_answer(llm, question, context)
-    st.markdown(f"### Answer:\n{answer}")
-
+if st.session_state.llm is None:
+    if st.button("📥 Load Model"):
+        load_model()
+    st.warning("👆 Load the model first to start asking questions.")
+else:
+    # Question input and answer
+    question = st.text_input("Ask a question about your resume:")
+    if question:
+        context = retrieve_relevant_text(question, resume_text)
+        answer = generate_answer(st.session_state.llm, question, context)
+        st.markdown(f"### Answer:\n{answer}")
 #########################################################################################################################
 
 
