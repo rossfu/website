@@ -99,8 +99,8 @@ else:
     user_input = st.text_input("What would you like to know about my resume?")
     if st.button("Ask") and user_input.strip():
         with st.spinner("Generating answer..."):
-            question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
-            D, I = st.session_state.index.search(question_vec, k=3)
+            user_input_vec = st.session_state.embedder.encode([user_input], convert_to_tensor=False)
+            D, I = st.session_state.index.search(user_input_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
                 "You are a friendly assistant who helps answer questions about a resume.\n"
