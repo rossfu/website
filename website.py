@@ -55,99 +55,68 @@ with col2:
         mime="application/pdf"
     )
 
+
 st.write("")
 st.write("")
+st.write("")
+st.write("")
+
 
 
 # AI #########################################################################################################################
+import streamlit as st
 from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 from sentence_transformers import SentenceTransformer
 import faiss
 import os
 
-# Title
-st.title("🤖 Would you like to ask AI about my resume?")
+MODEL_NAME = "google/flan-t5-small"
 
-# 1. Cache the embedder
 @st.cache_resource
-def load_embedder():
-    return SentenceTransformer("all-MiniLM-L6-v2")
-
-# 2. Load and cache the resume text
-@st.cache_data
-def load_resume_text():
+def load_resume_data():
     with open("txtresume.txt", "r", encoding="utf-8") as f:
-        return f.read()
+        resume_text = f.read()
+    chunks = [resume_text[i:i+400] for i in range(0, len(resume_text), 400)]
+    embedder = SentenceTransformer("all-MiniLM-L6-v2")
+    chunk_embeddings = embedder.encode(chunks, convert_to_tensor=False)
+    index = faiss.IndexFlatL2(len(chunk_embeddings[0]))
+    index.add(chunk_embeddings)
+    return embedder, chunks, index
 
-# 3. Use cached embedder and resume text to generate vectors + FAISS index
-def prepare_index(embedder, resume_text):
-    chunks = [chunk.strip() for chunk in resume_text.split("\n\n") if chunk.strip()]
-    vectors = embedder.encode(chunks)
-    index = faiss.IndexFlatL2(vectors.shape[1])
-    index.add(vectors)
-    return chunks, index
-
-# 4. Cache the LLM
 @st.cache_resource
 def load_llm():
-    return pipeline("text2text-generation", model="google/flan-t5-small")
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+    return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-# 5. Initialize state
+st.title("🤖 Would you like to ask AI about my resume?")
+
 if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = False
 
-# 6. Load button
 if not st.session_state.model_loaded:
-    if st.button("Yes!"):
+    if st.button("Yes Please!"):
         with st.spinner("Loading model and embedding resume..."):
-            embedder = load_embedder()
-            resume_text = load_resume_text()
-            chunks, index = prepare_index(embedder, resume_text)
-
-            # Save to session state
-            st.session_state.embedder = embedder
-            st.session_state.chunks = chunks
-            st.session_state.index = index
             st.session_state.rag_model = load_llm()
+            st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
             st.session_state.model_loaded = True
-        st.experimental_rerun()
-
-# 7. If model is ready
-if st.session_state.model_loaded:
-    st.success("✅ Model and resume loaded.")
-    user_input = st.text_input("💬 What would you like to know about my resume?")
-
-    if st.button("Ask") and user_input.strip():
-        with st.spinner("Thinking..."):
-            user_input_vec = st.session_state.embedder.encode([user_input], convert_to_tensor=False)
-            D, I = st.session_state.index.search(user_input_vec, k=3)
+else:
+    question = st.text_input("What would you like to know about my resume?")
+    if st.button("Ask") and question.strip():
+        with st.spinner("Generating answer..."):
+            question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
+            D, I = st.session_state.index.search(question_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
-
             prompt = (
-                "You are an intelligent and helpful assistant answering questions about the following resume.\n"
-                "Resume content:\n"
-                f"{context}\n\n"
-                "Instruction: Given the above resume, respond to the user's message below. "
-                "If the message is not a question, respond naturally and casually as if continuing a conversation. "
-                "If you don’t know the answer based on the resume, say so honestly.\n\n"
-                f"User: {user_input}\n"
-                "Answer:"
+                "You are a friendly assistant helping answer questions based on the resume below.\n"
+                "If the answer is not in the resume context, respond naturally and conversationally, "
+                "admitting you don't know but keeping the tone warm and helpful.\n\n"
+                f"Context: {context}\n\nQuestion: {question}\nAnswer:"
             )
-
-        
-        answer = st.session_state.rag_model(
-            prompt,
-            max_length=200,
-            no_repeat_ngram_size=3,
-            repetition_penalty=2.0,
-            do_sample=True,               # Enable sampling (instead of greedy)
-            temperature=0.7,              # Controls randomness, lower is more conservative
-            top_p=0.9                    # Nucleus sampling: consider top 90% tokens
-        )[0]['generated_text']
-        
-        
+            answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
         st.markdown("### 📌 Answer")
         st.write(answer)
+
 #########################################################################################################################
 
 
