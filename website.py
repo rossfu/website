@@ -84,7 +84,7 @@ def load_llm():
     model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
     return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-st.title("🤖 Would you like to ask AI about my resume? (Minimal Prototype)")
+st.title("🤖 Would you like to ask AI about my resume?")
 
 if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = False
@@ -107,26 +107,16 @@ else:
             D, I = st.session_state.index.search(user_input_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
-                "You are a helpful and conversational AI assistant with access to the user's resume below.\n"
-                "Use ONLY the resume information to answer questions accurately.\n"
-                "If the input is not a question or you do not have enough information, respond naturally and admit you don't know instead of repeating or making things up.\n"
-                "Avoid repeating the question or yourself.\n\n"
-                f"Resume Context:\n{context}\n\n"
-                f"User Input: {user_input}\n"
-                "Answer:"
+                "You are a friendly assistant who helps answer questions about a resume.\n"
+                "If the input is a question related to the resume, answer using ONLY the provided resume context.\n"
+                "If the input is not a question or cannot be answered from the resume, respond naturally and conversationally, "
+                "admitting if you don't know something.\n\n"
+                f"Resume Context: {context}\n\n"
+                f"User Input: {user_input}\nResponse:"
             )
-            
-            answer = st.session_state.rag_model(
-                prompt,
-                max_length=150,
-                num_beams=5,
-                no_repeat_ngram_size=3,
-                early_stopping=True,
-                temperature=0.7,
-            )[0]['generated_text']
-
-st.markdown("### 📌 Answer")
-st.write(answer)
+            answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
+        st.markdown("### 📌 Answer")
+        st.write(answer)
 
 #########################################################################################################################
 
