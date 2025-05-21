@@ -125,10 +125,6 @@ else:
                 temperature=0.7,
             )[0]['generated_text']
 
-# If the model's output is very similar to the input or seems repetitive, fallback to a polite "I don't know"
-if user_input.lower().strip() in answer.lower():
-    answer = "I'm not sure about that based on my resume, but feel free to ask me something else!"
-
 st.markdown("### 📌 Answer")
 st.write(answer)
 
