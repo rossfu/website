@@ -108,11 +108,12 @@ else:
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
                 "You are a friendly assistant who helps answer questions about a resume.\n"
-                "If the input is a question related to the resume, answer using ONLY the provided resume context.\n"
+                "If the input is a question related to the resume, answer using the provided resume context.\n"
                 "If the input is not a question or cannot be answered from the resume, respond naturally and conversationally, "
                 "admitting if you don't know something.\n\n"
-                f"Resume Context: {context}\n\n"
-                f"User Input: {user_input}\nResponse:"
+                f"Resume Context:\n{context}\n\n"
+                f"User Input: {user_input}\n"
+                "Response:"
             )
             answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
         st.markdown("### 📌 Answer")
