@@ -55,16 +55,11 @@ with col2:
         mime="application/pdf"
     )
 
-
 st.write("")
 st.write("")
-st.write("")
-st.write("")
-
 
 
 # AI #########################################################################################################################
-import streamlit as st
 from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 from sentence_transformers import SentenceTransformer
 import faiss
@@ -101,7 +96,7 @@ if not st.session_state.model_loaded:
             st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
             st.session_state.model_loaded = True
 else:
-    question = st.text_input("What would you like to know about my resume?")
+    user_input = st.text_input("What would you like to know about my resume?")
     if st.button("Ask") and question.strip():
         with st.spinner("Generating answer..."):
             question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
