@@ -89,27 +89,31 @@ def load_llm():
     model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
     return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-st.title("💼 Ask Questions About My Resume")
+st.title("🤖 Would you like to ask AI about my resume?")
 
 if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = False
 
 if not st.session_state.model_loaded:
-    if st.button("🚀 Load Model"):
+    if st.button("Yes Please!"):
         with st.spinner("Loading model and embedding resume..."):
             st.session_state.rag_model = load_llm()
             st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
             st.session_state.model_loaded = True
 else:
-    # Once model is loaded, button and "Model loaded!" message disappear automatically
     question = st.text_input("What would you like to know about my resume?")
-    if st.button("Ask"):
+    if st.button("Ask") and question.strip():
         with st.spinner("Generating answer..."):
             question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
             D, I = st.session_state.index.search(question_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
-            prompt = f"Context: {context}\n\nQuestion: {question}"
-            answer = st.session_state.rag_model(prompt, max_length=100)[0]['generated_text']
+            prompt = (
+                "You are a friendly assistant helping answer questions based on the resume below.\n"
+                "If the answer is not in the resume context, respond naturally and conversationally, "
+                "admitting you don't know but keeping the tone warm and helpful.\n\n"
+                f"Context: {context}\n\nQuestion: {question}\nAnswer:"
+            )
+            answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
         st.markdown("### 📌 Answer")
         st.write(answer)
 
