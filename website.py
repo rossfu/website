@@ -53,78 +53,65 @@ st.write("")
 
 
 # AI #########################################################################################################################
+import streamlit as st
+from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
+from sentence_transformers import SentenceTransformer
+import faiss
 import os
-import requests
-from llama_cpp import Llama
 
-# --- Model info ---
-MODEL_URL = "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf"
-MODEL_DIR = "models"
-MODEL_PATH = os.path.join(MODEL_DIR, "tinyllama.Q2_K.gguf")
+MODEL_NAME = "google/flan-t5-small"
 
-# --- Download GGUF model if not already downloaded ---
-def download_model():
-    if not os.path.exists(MODEL_DIR):
-        os.makedirs(MODEL_DIR)
-    if not os.path.exists(MODEL_PATH):
-        with st.spinner("⏳ Downloading model..."):
-            response = requests.get(MODEL_URL, stream=True)
-            with open(MODEL_PATH, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-        st.success("✅ Model downloaded!")
-
-# --- Load model only when user clicks a button ---
-def load_model():
-    if not os.path.exists(MODEL_PATH):
-        download_model()
-    with st.spinner("🧠 Loading model..."):
-        llm = Llama(model_path=MODEL_PATH, n_threads=4)
-        st.session_state.llm = llm
-        st.success("✅ Model loaded and ready!")
-
-# --- Load resume ---
-@st.cache_data
-def load_resume_text():
+# Step 1: Load the resume and embed it
+@st.cache_resource
+def load_resume_data():
     with open("txtresume.txt", "r", encoding="utf-8") as f:
-        return f.read()
+        resume_text = f.read()
+    chunks = [resume_text[i:i+400] for i in range(0, len(resume_text), 400)]
+    embedder = SentenceTransformer("all-MiniLM-L6-v2")
+    chunk_embeddings = embedder.encode(chunks, convert_to_tensor=False)
+    index = faiss.IndexFlatL2(len(chunk_embeddings[0]))
+    index.add(chunk_embeddings)
+    return embedder, chunks, index
 
-# --- Simple retrieval (placeholder for now) ---
-def retrieve_relevant_text(question, resume_text, max_len=500):
-    return resume_text[:max_len]
+# Step 2: Load the LLM (only on demand)
+@st.cache_resource
+def load_llm():
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+    model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+    return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-# --- LLM inference ---
-def generate_answer(llm, question, context):
-    prompt = (
-        "You are a helpful assistant. Use the following resume snippet to answer the question.\n\n"
-        f"Resume snippet:\n{context}\n\n"
-        f"Question: {question}\n"
-        "Answer:"
-    )
-    output = llm(prompt, max_tokens=256, stop=["\n\n"])
-    return output["choices"][0]["text"].strip()
+# UI
+st.title("💼 Ask Questions About My Resume")
 
-# --- Streamlit App ---
-st.title("🤖 Resume Q&A with TinyLlama")
+model_loaded = st.session_state.get("model_loaded", False)
 
-# Load resume
-resume_text = load_resume_text()
+# Button to load model
+if not model_loaded and st.button("🚀 Load Model"):
+    with st.spinner("Loading model and embedding resume..."):
+        rag_model = load_llm()
+        embedder, chunks, index = load_resume_data()
+        st.session_state.rag_model = rag_model
+        st.session_state.embedder = embedder
+        st.session_state.chunks = chunks
+        st.session_state.index = index
+        st.session_state.model_loaded = True
+    st.success("Model loaded!")
 
-# --- Model loading UI ---
-if "llm" not in st.session_state:
-    st.session_state.llm = None
-
-if st.session_state.llm is None:
-    if st.button("📥 Load Model"):
-        load_model()
-    st.warning("👆 Load the model first to start asking questions.")
+# Q&A
+if st.session_state.get("model_loaded", False):
+    question = st.text_input("What would you like to know about my resume?")
+    if st.button("Ask"):
+        with st.spinner("Generating answer..."):
+            question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
+            D, I = st.session_state.index.search(question_vec, k=3)
+            context = "\n".join([st.session_state.chunks[i] for i in I[0]])
+            prompt = f"Context: {context}\n\nQuestion: {question}"
+            answer = st.session_state.rag_model(prompt, max_length=100)[0]['generated_text']
+        st.markdown("### 📌 Answer")
+        st.write(answer)
 else:
-    # Question input and answer
-    question = st.text_input("Ask a question about your resume:")
-    if question:
-        context = retrieve_relevant_text(question, resume_text)
-        answer = generate_answer(st.session_state.llm, question, context)
-        st.markdown(f"### Answer:\n{answer}")
+    st.info("Click 'Load Model' to begin.")
+
 #########################################################################################################################
 
 
