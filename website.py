@@ -95,7 +95,7 @@ if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = False
 
 if not st.session_state.model_loaded:
-    if st.button("Yes Please!"):
+    if st.button("Yes!"):
         with st.spinner("Loading model and embedding resume..."):
             st.session_state.rag_model = load_llm()
             st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
@@ -108,10 +108,12 @@ else:
             D, I = st.session_state.index.search(question_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
-                "You are a friendly assistant helping answer questions based on the resume below.\n"
-                "If the answer is not in the resume context, respond naturally and conversationally, "
-                "admitting you don't know but keeping the tone warm and helpful.\n\n"
-                f"Context: {context}\n\nQuestion: {question}\nAnswer:"
+                "You are a friendly assistant who helps answer questions about a resume.\n"
+                "If the input is a question related to the resume, answer using ONLY the provided resume context.\n"
+                "If the input is not a question or cannot be answered from the resume, respond naturally and conversationally, "
+                "admitting if you don't know something.\n\n"
+                f"Resume Context: {context}\n\n"
+                f"User Input: {user_input}\nResponse:"
             )
             answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
         st.markdown("### 📌 Answer")
