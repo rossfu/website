@@ -16,6 +16,25 @@ st.set_page_config(
 )
 
 
+# Aesthetics 
+st.markdown("""
+    <style>
+    body {
+        background: linear-gradient(-45deg, #1e3c72, #2a5298, #1e3c72, #2a5298);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+    }
+
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
+
 # Title
 st.title("Welcome to Eric Fu's Website!")
 
