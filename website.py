@@ -97,7 +97,7 @@ if not st.session_state.model_loaded:
             st.session_state.model_loaded = True
 else:
     user_input = st.text_input("What would you like to know about my resume?")
-    if st.button("Ask") and question.strip():
+    if st.button("Ask") and user_input.strip():
         with st.spinner("Generating answer..."):
             question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
             D, I = st.session_state.index.search(question_vec, k=3)
