@@ -42,29 +42,22 @@ with col2:
     st.write("https://github.com/rossfu")
     st.write("ericrossfu@yahoo.com")
     st.write("713-540-4528")
-
+    
+    # Read the file in binary mode
+    with open("Eric Fu Resume 2025.pdf", "rb") as f:
+        pdf_data = f.read()
+    
+    # Download button
+    st.download_button(
+        label="Download my Resume",
+        data=pdf_data,
+        file_name="resume.pdf",
+        mime="application/pdf"
+    )
 
 
 st.write("")
 st.write("")
-
-
-# Resume
-st.title("📄 Download My Resume")
-
-# Read the file in binary mode
-with open("Eric Fu Resume 2025.pdf", "rb") as f:
-    pdf_data = f.read()
-
-# Download button
-st.download_button(
-    label="📥 Download Resume as .pdf",
-    data=pdf_data,
-    file_name="resume.pdf",
-    mime="application/pdf"
-)
-
-
 st.write("")
 st.write("")
 
