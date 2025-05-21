@@ -81,7 +81,7 @@ def load_llm():
     return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
 # UI
-st.title("💼 Ask Questions About My Resume")
+st.title("Ask my AI a question about my resume")
 
 model_loaded = st.session_state.get("model_loaded", False)
 
@@ -117,16 +117,8 @@ else:
 
 
 # Email me function
+st.write("")
 
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
 def send_email(name, email, input_message):
     # Email configurations
     sender_email = "ericrossfu@yahoo.com"  # Replace with your Yahoo email
@@ -179,11 +171,6 @@ def send_email(name, email, input_message):
 
 
 # Contact me Function
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
 st.write("")
 st.title('Contact Me')
     
