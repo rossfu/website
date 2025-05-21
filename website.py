@@ -183,6 +183,8 @@ def send_email(name, email, input_message):
 
 # Contact me Function
 st.write("")
+st.write("")
+st.write("")
 st.title('Contact Me')
     
 # Get user input for name
