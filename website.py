@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -56,16 +55,11 @@ with col2:
         mime="application/pdf"
     )
 
-
 st.write("")
 st.write("")
-st.write("")
-st.write("")
-
 
 
 # AI #########################################################################################################################
-import streamlit as st
 from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
 from sentence_transformers import SentenceTransformer
 import faiss
@@ -102,11 +96,11 @@ if not st.session_state.model_loaded:
             st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
             st.session_state.model_loaded = True
 else:
-    question = st.text_input("What would you like to know about my resume?")
-    if st.button("Ask") and question.strip():
+    user_input = st.text_input("What would you like to know about my resume?")
+    if st.button("Ask") and user_input.strip():
         with st.spinner("Generating answer..."):
-            question_vec = st.session_state.embedder.encode([question], convert_to_tensor=False)
-            D, I = st.session_state.index.search(question_vec, k=3)
+            user_input_vec = st.session_state.embedder.encode([user_input], convert_to_tensor=False)
+            D, I = st.session_state.index.search(user_input_vec, k=3)
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
                 "You are a friendly assistant who helps answer questions about a resume.\n"
