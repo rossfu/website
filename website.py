@@ -90,11 +90,15 @@ if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = False
 
 if not st.session_state.model_loaded:
-    if st.button("Yes!"):
+    # Use st.button with key to ensure Streamlit state updates properly
+    load_clicked = st.button("Yes!", key="load_model_button")
+    if load_clicked:
         with st.spinner("Loading model and embedding resume..."):
             st.session_state.rag_model = load_llm()
             st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
             st.session_state.model_loaded = True
+        # Rerun so UI updates immediately to show input box and hide button
+        st.experimental_rerun()
 else:
     user_input = st.text_input("What would you like to know about my resume?")
     if st.button("Ask") and user_input.strip():
