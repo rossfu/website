@@ -124,13 +124,14 @@ if st.session_state.model_loaded:
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
 
             prompt = (
-                "You are a helpful and conversational assistant. The user has provided their full resume below.\n"
-                "Treat this resume as a complete representation of their experience, skills, and knowledge.\n"
-                "If the user asks about their knowledge, assume everything in the resume is what they know.\n"
-                "If the input is not a question, respond casually and professionally.\n\n"
-                f"Resume:\n{context}\n\n"
+                "You are an intelligent and helpful assistant answering questions about the following resume.\n"
+                "Resume content:\n"
+                f"{context}\n\n"
+                "Instruction: Given the above resume, respond to the user's message below. "
+                "If the message is not a question, respond naturally and casually as if continuing a conversation. "
+                "If you don’t know the answer based on the resume, say so honestly.\n\n"
                 f"User: {user_input}\n"
-                f"Assistant:"
+                "Answer:"
             )
 
             answer = st.session_state.rag_model(prompt, max_length=200)[0]['generated_text']
