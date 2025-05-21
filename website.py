@@ -110,7 +110,8 @@ else:
                 "You are a friendly assistant who helps answer questions about a resume.\n"
                 "If the input is a question related to the resume, answer using ONLY the provided resume context.\n"
                 "If the input is not a question or cannot be answered from the resume, respond naturally and conversationally, "
-                "admitting if you don't know something.\n\n"
+                "admitting if you don't know something.\n"
+                "Eric Ross Fu is the name of the resume owner\n\n"
                 f"Resume Context: {context}\n\n"
                 f"User Input: {user_input}\nResponse:"
             )
