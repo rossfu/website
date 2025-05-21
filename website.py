@@ -84,7 +84,7 @@ def load_llm():
     model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
     return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-st.title("🤖 Would you like to ask AI about my resume?")
+st.title("🤖 Would you like to ask AI about my resume? (Minimal Prototype)")
 
 if "model_loaded" not in st.session_state:
     st.session_state.model_loaded = False
