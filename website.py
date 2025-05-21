@@ -17,7 +17,7 @@ st.set_page_config(
 
 
 # Title
-st.title("Hello, welcome to Eric Fu's website!")
+st.title("Welcome to Eric Fu's Website!")
 
 
 # Play background music
@@ -47,6 +47,24 @@ with col2:
 
 st.write("")
 st.write("")
+
+
+# Resume
+st.title("📄 Download My Resume")
+
+# Read the file in binary mode
+with open("Eric Fu Resume 2025.pdf", "rb") as f:
+    pdf_data = f.read()
+
+# Download button
+st.download_button(
+    label="📥 Download Resume as .pdf",
+    data=pdf_data,
+    file_name="resume.pdf",
+    mime="application/pdf"
+)
+
+
 st.write("")
 st.write("")
 
