@@ -134,7 +134,18 @@ if st.session_state.model_loaded:
                 "Answer:"
             )
 
-            answer = st.session_state.rag_model(prompt, max_length=200)[0]['generated_text']
+        
+        answer = st.session_state.rag_model(
+            prompt,
+            max_length=200,
+            no_repeat_ngram_size=3,
+            repetition_penalty=2.0,
+            do_sample=True,               # Enable sampling (instead of greedy)
+            temperature=0.7,              # Controls randomness, lower is more conservative
+            top_p=0.9                    # Nucleus sampling: consider top 90% tokens
+        )[0]['generated_text']
+        
+        
         st.markdown("### 📌 Answer")
         st.write(answer)
 #########################################################################################################################
