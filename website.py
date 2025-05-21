@@ -72,7 +72,6 @@ import os
 
 MODEL_NAME = "google/flan-t5-small"
 
-# Step 1: Load the resume and embed it
 @st.cache_resource
 def load_resume_data():
     with open("txtresume.txt", "r", encoding="utf-8") as f:
@@ -84,31 +83,23 @@ def load_resume_data():
     index.add(chunk_embeddings)
     return embedder, chunks, index
 
-# Step 2: Load the LLM (only on demand)
 @st.cache_resource
 def load_llm():
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
     return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
 
-# UI
-st.title("Would you like to ask AI about my resume?")
+st.title("💼 Ask Questions About My Resume")
 
-model_loaded = st.session_state.get("model_loaded", False)
+if "model_loaded" not in st.session_state:
+    st.session_state.model_loaded = False
 
-# Button to load model
-if not model_loaded and st.button("Yes Please!"):
-    with st.spinner("Loading model and embedding resume..."):
-        rag_model = load_llm()
-        embedder, chunks, index = load_resume_data()
-        st.session_state.rag_model = rag_model
-        st.session_state.embedder = embedder
-        st.session_state.chunks = chunks
-        st.session_state.index = index
-        st.session_state.model_loaded = True
-    st.success("Model loaded!")
-
-# Q&A
+if not st.session_state.model_loaded:
+    if st.button("🚀 Load Model"):
+        with st.spinner("Loading model and embedding resume..."):
+            st.session_state.rag_model = load_llm()
+            st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
+            st.session_state.model_loaded = True
 else:
     # Once model is loaded, button and "Model loaded!" message disappear automatically
     question = st.text_input("What would you like to know about my resume?")
