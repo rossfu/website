@@ -16,25 +16,6 @@ st.set_page_config(
 )
 
 
-# Aesthetics 
-st.markdown("""
-    <style>
-    body {
-        background: linear-gradient(-45deg, #1e3c72, #2a5298, #1e3c72, #2a5298);
-        background-size: 400% 400%;
-        animation: gradient 15s ease infinite;
-    }
-
-    @keyframes gradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-
-
 # Title
 st.title("Welcome to Eric Fu's Website!")
 
@@ -123,9 +104,9 @@ else:
             context = "\n".join([st.session_state.chunks[i] for i in I[0]])
             prompt = (
                 "You are a helpful and conversational assistant. The user has provided their full resume below.\n"
+                "If the input is not a question, respond casually and naturally.\n"
                 "Treat this resume as a complete representation of their experience, skills, and knowledge.\n"
                 "If the user asks about their knowledge, assume everything in the resume is what they know.\n"
-                "If the input is not a question, respond casually and naturally.\n"
                 "If you're unsure or the information isn’t in the resume, say so politely — don’t make things up.\n\n"
                 f"Resume:\n{context}\n\n"
                 f"User: {user_input}\n"
