@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-#import plotly.graph_objects as go
 
 import smtplib
 from email.mime.text import MIMEText
@@ -50,19 +49,82 @@ st.write("")
 st.write("")
 st.write("")
 st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-
-# Features in Progress: Download Resume, Generative Language Model to answer questions about me, APIs to access Machine Learning projects, Video Blog
-
 
 
 
 # AI #########################################################################################################################
+import os
+import requests
+from llama_cpp import Llama
 
+# --- Model info ---
+MODEL_URL = "https://huggingface.co/TheBloke/TinyLlama-1.1B-Chat-v1.0-GGUF/resolve/main/tinyllama-1.1b-chat-v1.0.Q2_K.gguf"
+MODEL_DIR = "models"
+MODEL_PATH = os.path.join(MODEL_DIR, "tinyllama.Q2_K.gguf")
+
+# --- Download GGUF model if not already downloaded ---
+def download_model():
+    if not os.path.exists(MODEL_DIR):
+        os.makedirs(MODEL_DIR)
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner("⏳ Downloading model..."):
+            response = requests.get(MODEL_URL, stream=True)
+            with open(MODEL_PATH, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
+        st.success("✅ Model downloaded!")
+
+# --- Load model only when user clicks a button ---
+def load_model():
+    if not os.path.exists(MODEL_PATH):
+        download_model()
+    with st.spinner("🧠 Loading model..."):
+        llm = Llama(model_path=MODEL_PATH, n_threads=4)
+        st.session_state.llm = llm
+        st.success("✅ Model loaded and ready!")
+
+# --- Load resume ---
+@st.cache_data
+def load_resume_text():
+    with open("txtresume.txt", "r", encoding="utf-8") as f:
+        return f.read()
+
+# --- Simple retrieval (placeholder for now) ---
+def retrieve_relevant_text(question, resume_text, max_len=500):
+    return resume_text[:max_len]
+
+# --- LLM inference ---
+def generate_answer(llm, question, context):
+    prompt = (
+        "You are a helpful assistant. Use the following resume snippet to answer the question.\n\n"
+        f"Resume snippet:\n{context}\n\n"
+        f"Question: {question}\n"
+        "Answer:"
+    )
+    output = llm(prompt, max_tokens=256, stop=["\n\n"])
+    return output["choices"][0]["text"].strip()
+
+# --- Streamlit App ---
+st.title("🤖 Resume Q&A with TinyLlama")
+
+# Load resume
+resume_text = load_resume_text()
+
+# --- Model loading UI ---
+if "llm" not in st.session_state:
+    st.session_state.llm = None
+
+if st.session_state.llm is None:
+    if st.button("📥 Load Model"):
+        load_model()
+    st.warning("👆 Load the model first to start asking questions.")
+else:
+    # Question input and answer
+    question = st.text_input("Ask a question about your resume:")
+    if question:
+        context = retrieve_relevant_text(question, resume_text)
+        answer = generate_answer(st.session_state.llm, question, context)
+        st.markdown(f"### Answer:\n{answer}")
 #########################################################################################################################
 
 
