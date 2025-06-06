@@ -62,29 +62,52 @@ st.write("")
 # AI #########################################################################################################################
 import streamlit as st
 import openai
+import time
+import os
 
-# Load secrets from Streamlit Secrets
-api_key = st.secrets["OPENAI_API_KEY"]
-document_id = st.secrets["OPENAI_DOCUMENT_ID"]
+# Load credentials from Streamlit secrets
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
-
-openai.api_key = api_key
 
 st.title("🤖 Would you like to ask AI about my resume?")
 
-user_question = st.text_input("Ask a question about my resume:")
+user_input = st.text_input("Ask away")
 
-if user_question:
-    response = openai.chat.completions.create(
-        model=assistant_id,
-        messages=[
-            {"role": "user", "content": user_question},
-            {"role": "system", "content": f"Use document {document_id} to answer the question."}
-        ],
-    )
-    answer = response.choices[0].message.content
-    st.write("Answer:")
-    st.write(answer)
+if user_input:
+    with st.spinner("Thinking..."):
+        # Step 1: Create a thread
+        thread = openai.beta.threads.create()
+
+        # Step 2: Add a message to the thread
+        openai.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=user_input
+        )
+
+        # Step 3: Run the assistant on the thread
+        run = openai.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=assistant_id
+        )
+
+        # Step 4: Wait for completion
+        while True:
+            run_status = openai.beta.threads.runs.retrieve(
+                thread_id=thread.id,
+                run_id=run.id
+            )
+            if run_status.status == "completed":
+                break
+            elif run_status.status == "failed":
+                st.error("Assistant failed to respond.")
+                break
+            time.sleep(1)
+
+        # Step 5: Get the assistant's reply
+        messages = openai.beta.threads.messages.list(thread_id=thread.id)
+        response = messages.data[0].content[0].text.value
+        st.success(response)
 
 
 
