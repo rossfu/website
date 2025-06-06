@@ -62,56 +62,30 @@ st.write("")
 # AI #########################################################################################################################
 import streamlit as st
 import openai
-import time
-import toml
 
-# Load API key from config.toml or hardcode if preferred
-config = toml.load("config.toml")
-openai.api_key = config["openai"]["api_key"]
+# Load secrets from Streamlit Secrets
+api_key = st.secrets["OPENAI_API_KEY"]
+document_id = st.secrets["OPENAI_DOCUMENT_ID"]
+assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
-# Your assistant ID (replace this with your actual assistant ID)
-ASSISTANT_ID = "asst_abc123xyz456"
+openai.api_key = api_key
 
 st.title("🤖 Would you like to ask AI about my resume?")
-st.write("Ask questions about my resume using OpenAI!")
 
-# User input
-question = st.text_input("Enter your question about the resume")
+user_question = st.text_input("Ask a question about my resume:")
 
-if question:
-    with st.spinner("Thinking..."):
-        # Step 1: Create a thread
-        thread = openai.beta.threads.create()
+if user_question:
+    response = openai.chat.completions.create(
+        model=assistant_id,
+        messages=[
+            {"role": "user", "content": user_question},
+            {"role": "system", "content": f"Use document {document_id} to answer the question."}
+        ],
+    )
+    answer = response.choices[0].message.content
+    st.write("Answer:")
+    st.write(answer)
 
-        # Step 2: Add user message to the thread
-        openai.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=question
-        )
-
-        # Step 3: Run the assistant
-        run = openai.beta.threads.runs.create(
-            thread_id=thread.id,
-            assistant_id=ASSISTANT_ID
-        )
-
-        # Step 4: Wait for completion
-        while True:
-            run_status = openai.beta.threads.runs.retrieve(
-                thread_id=thread.id,
-                run_id=run.id
-            )
-            if run_status.status == "completed":
-                break
-            time.sleep(1)
-
-        # Step 5: Get the response
-        messages = openai.beta.threads.messages.list(thread_id=thread.id)
-        answer = messages.data[0].content[0].text.value
-
-        st.markdown("### Answer:")
-        st.write(answer)
 
 
 #########################################################################################################################
