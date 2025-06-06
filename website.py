@@ -60,64 +60,59 @@ st.write("")
 
 
 # AI #########################################################################################################################
-from transformers import pipeline, AutoModelForSeq2SeqLM, AutoTokenizer
-from sentence_transformers import SentenceTransformer
-import faiss
-import os
+import streamlit as st
+import openai
+import time
+import toml
 
-MODEL_NAME = "google/flan-t5-small"
+# Load API key from config.toml or hardcode if preferred
+config = toml.load("config.toml")
+openai.api_key = config["openai"]["api_key"]
 
-@st.cache_resource
-def load_resume_data():
-    with open("txtresume.txt", "r", encoding="utf-8") as f:
-        resume_text = f.read()
-    chunks = [resume_text[i:i+400] for i in range(0, len(resume_text), 400)]
-    embedder = SentenceTransformer("all-MiniLM-L6-v2")
-    chunk_embeddings = embedder.encode(chunks, convert_to_tensor=False)
-    index = faiss.IndexFlatL2(len(chunk_embeddings[0]))
-    index.add(chunk_embeddings)
-    return embedder, chunks, index
-
-@st.cache_resource
-def load_llm():
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-    model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
-    return pipeline("text2text-generation", model=model, tokenizer=tokenizer)
+# Your assistant ID (replace this with your actual assistant ID)
+ASSISTANT_ID = "asst_abc123xyz456"
 
 st.title("🤖 Would you like to ask AI about my resume?")
+st.write("Ask questions about my resume using OpenAI!")
 
-if "model_loaded" not in st.session_state:
-    st.session_state.model_loaded = False
+# User input
+question = st.text_input("Enter your question about the resume")
 
-if not st.session_state.model_loaded:
-    # Use st.button with key to ensure Streamlit state updates properly
-    load_clicked = st.button("Yes!", key="load_model_button")
-    if load_clicked:
-        with st.spinner("Loading model and embedding resume..."):
-            st.session_state.rag_model = load_llm()
-            st.session_state.embedder, st.session_state.chunks, st.session_state.index = load_resume_data()
-            st.session_state.model_loaded = True
-        # Rerun so UI updates immediately to show input box and hide button
-        st.experimental_rerun()
-else:
-    user_input = st.text_input("What would you like to know about my resume?")
-    if st.button("Ask") and user_input.strip():
-        with st.spinner("Generating answer..."):
-            user_input_vec = st.session_state.embedder.encode([user_input], convert_to_tensor=False)
-            D, I = st.session_state.index.search(user_input_vec, k=3)
-            context = "\n".join([st.session_state.chunks[i] for i in I[0]])
-            prompt = (
-                "You are a friendly assistant who helps answer questions about a resume.\n"
-                "If the input is a question related to the resume, answer using the provided resume context.\n"
-                "If the input is not a question or cannot be answered from the resume, respond naturally and conversationally, "
-                "admitting if you don't know something.\n\n"
-                f"Resume Context:\n{context}\n\n"
-                f"User Input: {user_input}\n"
-                "Response:"
+if question:
+    with st.spinner("Thinking..."):
+        # Step 1: Create a thread
+        thread = openai.beta.threads.create()
+
+        # Step 2: Add user message to the thread
+        openai.beta.threads.messages.create(
+            thread_id=thread.id,
+            role="user",
+            content=question
+        )
+
+        # Step 3: Run the assistant
+        run = openai.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=ASSISTANT_ID
+        )
+
+        # Step 4: Wait for completion
+        while True:
+            run_status = openai.beta.threads.runs.retrieve(
+                thread_id=thread.id,
+                run_id=run.id
             )
-            answer = st.session_state.rag_model(prompt, max_length=150)[0]['generated_text']
-        st.markdown("### 📌 Answer")
+            if run_status.status == "completed":
+                break
+            time.sleep(1)
+
+        # Step 5: Get the response
+        messages = openai.beta.threads.messages.list(thread_id=thread.id)
+        answer = messages.data[0].content[0].text.value
+
+        st.markdown("### Answer:")
         st.write(answer)
+
 
 #########################################################################################################################
 
