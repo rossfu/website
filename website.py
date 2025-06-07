@@ -63,7 +63,6 @@ st.write("")
 import streamlit as st
 import openai
 import time
-import os
 
 # Load credentials from Streamlit secrets
 openai.api_key = st.secrets["OPENAI_API_KEY"]
@@ -71,27 +70,49 @@ assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
 st.title("🤖 Would you like to ask AI about my resume?")
 
-user_input = st.text_input("Ask away")
+# Ask for access code (optional for access control)
+access_code = st.text_input("Enter access code", type="password")
+if access_code != st.secrets["ACCESS_CODE"]:
+    st.warning("Incorrect or missing access code.")
+    st.stop()
+
+# Rate limiting: prevent repeated submissions
+if "last_query_time" in st.session_state:
+    if time.time() - st.session_state.last_query_time < 10:
+        st.warning("Please wait a few seconds before asking another question.")
+        st.stop()
+
+# Limit user input length
+user_input = st.text_input("Ask away (max 300 characters)")
+if user_input and len(user_input) > 300:
+    st.warning("Input too long. Please keep it under 300 characters.")
+    st.stop()
 
 if user_input:
-    with st.spinner("Thinking..."):
-        # Step 1: Create a thread
-        thread = openai.beta.threads.create()
+    st.session_state.last_query_time = time.time()
 
-        # Step 2: Add a message to the thread
+    with st.spinner("Thinking..."):
+        # Reuse thread in session
+        if "thread_id" not in st.session_state:
+            thread = openai.beta.threads.create()
+            st.session_state.thread_id = thread.id
+        else:
+            thread = openai.beta.threads.retrieve(st.session_state.thread_id)
+
+        # Add message to the thread
         openai.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
             content=user_input
         )
 
-        # Step 3: Run the assistant on the thread
+        # Run assistant
         run = openai.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id=assistant_id
         )
 
-        # Step 4: Wait for completion
+        # Poll for completion
         while True:
             run_status = openai.beta.threads.runs.retrieve(
                 thread_id=thread.id,
@@ -104,10 +125,11 @@ if user_input:
                 break
             time.sleep(1)
 
-        # Step 5: Get the assistant's reply
+        # Show assistant reply
         messages = openai.beta.threads.messages.list(thread_id=thread.id)
         response = messages.data[0].content[0].text.value
         st.success(response)
+
 
 
 
