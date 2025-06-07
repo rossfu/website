@@ -69,6 +69,7 @@ assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
 st.title("🤖 Would you like to ask AI about my resume?")
 
+
 # Rate limiting: prevent repeated submissions
 if "last_query_time" in st.session_state:
     if time.time() - st.session_state.last_query_time < 10:
@@ -76,11 +77,16 @@ if "last_query_time" in st.session_state:
         st.stop()
 
 # Limit user input length
-user_input = st.text_input("Ask away (max 300 characters)")
-if user_input and len(user_input) > 300:
-    st.warning("Input too long. Please keep it under 300 characters.")
+user_input = st.text_input("Ask away")
+
+
+if user_input and len(user_input) > 500:
+    st.warning("500 character limit")
     st.stop()
 
+
+
+# More
 if user_input:
     st.session_state.last_query_time = time.time()
 
