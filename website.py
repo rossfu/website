@@ -60,7 +60,6 @@ st.write("")
 
 
 # AI #########################################################################################################################
-import streamlit as st
 import openai
 import time
 
@@ -69,12 +68,6 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
 st.title("🤖 Would you like to ask AI about my resume?")
-
-# Ask for access code (optional for access control)
-access_code = st.text_input("Enter access code", type="password")
-if access_code != st.secrets["ACCESS_CODE"]:
-    st.warning("Incorrect or missing access code.")
-    st.stop()
 
 # Rate limiting: prevent repeated submissions
 if "last_query_time" in st.session_state:
@@ -129,9 +122,6 @@ if user_input:
         messages = openai.beta.threads.messages.list(thread_id=thread.id)
         response = messages.data[0].content[0].text.value
         st.success(response)
-
-
-
 
 #########################################################################################################################
 
