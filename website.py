@@ -67,7 +67,7 @@ import time
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
-st.title("🤖 Would you like to ask AI about my resume?")
+st.title("🤖 Ask AI about my Resume")
 
 
 # Rate limiting: prevent repeated submissions
