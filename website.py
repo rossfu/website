@@ -21,8 +21,8 @@ st.title("Welcome to Eric Fu's Website!")
 
 
 # Play background music
-audio_file = open('Survivor - Eye Of The Tiger (Official HD Video).mp3', 'rb')
-st.audio(audio_file, format='audio/mp3', start_time=0)
+#audio_file = open('Survivor - Eye Of The Tiger (Official HD Video).mp3', 'rb')
+#st.audio(audio_file, format='audio/mp3', start_time=0)
 
 
 
@@ -191,7 +191,7 @@ def send_email(name, email, input_message):
 st.write("")
 st.write("")
 st.write("")
-st.title('Contact Me')
+st.title('📧 Contact Me')
     
 # Get user input for name
 name = st.text_input('Name:', '')
