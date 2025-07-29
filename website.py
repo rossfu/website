@@ -60,6 +60,7 @@ st.write("")
 
 
 # AI #########################################################################################################################
+import streamlit as st
 import openai
 import time
 
@@ -69,36 +70,34 @@ assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
 st.title("🤖 Ask AI about my Resume")
 
+# Text input area
+user_input = st.text_area("Ask away", height=100)
+submit = st.button("Submit")
 
-# Rate limiting: prevent repeated submissions
-if "last_query_time" in st.session_state:
+# Rate limiting
+if "last_query_time" not in st.session_state:
+    st.session_state.last_query_time = 0
+
+if submit:
     if time.time() - st.session_state.last_query_time < 10:
         st.warning("Please wait a few seconds before asking another question.")
         st.stop()
 
-# Limit user input length
-user_input = st.text_input("Ask away")
+    if len(user_input) > 500:
+        st.warning("500 character limit")
+        st.stop()
 
-
-if user_input and len(user_input) > 500:
-    st.warning("500 character limit")
-    st.stop()
-
-
-
-# More
-if user_input:
     st.session_state.last_query_time = time.time()
 
     with st.spinner("Thinking..."):
-        # Reuse thread in session
+        # Reuse or create thread
         if "thread_id" not in st.session_state:
             thread = openai.beta.threads.create()
             st.session_state.thread_id = thread.id
         else:
             thread = openai.beta.threads.retrieve(st.session_state.thread_id)
 
-        # Add message to the thread
+        # Add message
         openai.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
@@ -111,7 +110,7 @@ if user_input:
             assistant_id=assistant_id
         )
 
-        # Poll for completion
+        # Poll until completion
         while True:
             run_status = openai.beta.threads.runs.retrieve(
                 thread_id=thread.id,
@@ -124,10 +123,9 @@ if user_input:
                 break
             time.sleep(1)
 
-        # Show assistant reply
+        # Show response
         messages = openai.beta.threads.messages.list(thread_id=thread.id)
-        response = messages.data[0].content[0].text.value
-        st.success(response)
+        response = messages.data[0].content[0].t
 
 #########################################################################################################################
 
