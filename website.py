@@ -64,21 +64,22 @@ import streamlit as st
 import openai
 import time
 
-# Load credentials
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
 st.title("🤖 Ask AI about my Resume")
 
-# Layout: text input and submit button
-user_input = st.text_input("Ask away")
-submit = st.button("Send")
-
-# Rate limiting setup
+# Rate limit setup
 if "last_query_time" not in st.session_state:
     st.session_state.last_query_time = 0
 
-if submit:
+# Form with inline input + button
+with st.form(key="input_form", clear_on_submit=False):
+    cols = st.columns([5, 1])  # Wider input, smaller button
+    user_input = cols[0].text_input("Ask away", label_visibility="collapsed")
+    submitted = cols[1].form_submit_button("Send")
+
+if submitted:
     if time.time() - st.session_state.last_query_time < 10:
         st.warning("Please wait a few seconds before asking another question.")
         st.stop()
@@ -90,43 +91,25 @@ if submit:
     st.session_state.last_query_time = time.time()
 
     with st.spinner("Thinking..."):
-        # Create or reuse thread
         if "thread_id" not in st.session_state:
             thread = openai.beta.threads.create()
             st.session_state.thread_id = thread.id
         else:
             thread = openai.beta.threads.retrieve(st.session_state.thread_id)
 
-        # Add user message
         openai.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
             content=user_input
         )
 
-        # Run assistant
         run = openai.beta.threads.runs.create(
             thread_id=thread.id,
             assistant_id=assistant_id
         )
 
-        # Poll for response
         while True:
-            run_status = openai.beta.threads.runs.retrieve(
-                thread_id=thread.id,
-                run_id=run.id
-            )
-            if run_status.status == "completed":
-                break
-            elif run_status.status == "failed":
-                st.error("Assistant failed to respond.")
-                break
-            time.sleep(1)
-
-        # Display answer
-        messages = openai.beta.threads.messages.list(thread_id=thread.id)
-        response = messages.data[0].content[0].text.value
-        st.success(response)
+            run_status = openai.beta.threads._
 
 #########################################################################################################################
 
