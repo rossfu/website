@@ -61,55 +61,38 @@ st.write("")
 
 # AI #########################################################################################################################
 import streamlit as st
-import openai
-import time
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
+# Custom CSS to remove border from input box
+st.markdown("""
+    <style>
+    div[data-baseweb="input"] > div {
+        border: none !important;
+        box-shadow: none !important;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+    input {
+        border: none !important;
+        outline: none !important;
+        background: transparent !important;
+        font-size: 16px;
+    }
+    button[kind="secondary"] {
+        height: 36px;
+        margin-top: 2px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-st.title("🤖 Ask AI about my Resume")
+# Create one-line form layout
+with st.form("input_form", clear_on_submit=True):
+    cols = st.columns([5, 1])
+    user_input = cols[0].text_input("", placeholder="Ask a question...", label_visibility="collapsed")
+    submit = cols[1].form_submit_button("Send")
 
-# Rate limit setup
-if "last_query_time" not in st.session_state:
-    st.session_state.last_query_time = 0
-
-# Form with inline input + button
-with st.form(key="input_form", clear_on_submit=False):
-    cols = st.columns([5, 1])  # Wider input, smaller button
-    user_input = cols[0].text_input("Ask away", label_visibility="collapsed")
-    submitted = cols[1].form_submit_button("Send")
-
-if submitted:
-    if time.time() - st.session_state.last_query_time < 10:
-        st.warning("Please wait a few seconds before asking another question.")
-        st.stop()
-
-    if len(user_input) > 500:
-        st.warning("500 character limit")
-        st.stop()
-
-    st.session_state.last_query_time = time.time()
-
-    with st.spinner("Thinking..."):
-        if "thread_id" not in st.session_state:
-            thread = openai.beta.threads.create()
-            st.session_state.thread_id = thread.id
-        else:
-            thread = openai.beta.threads.retrieve(st.session_state.thread_id)
-
-        openai.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=user_input
-        )
-
-        run = openai.beta.threads.runs.create(
-            thread_id=thread.id,
-            assistant_id=assistant_id
-        )
-
-        while True:
-            run_status = openai.beta.threads._
+# Display result
+if submit:
+    st.write("You asked:", user_input)
 
 #########################################################################################################################
 
