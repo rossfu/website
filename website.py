@@ -64,17 +64,17 @@ import streamlit as st
 import openai
 import time
 
-# Load credentials from Streamlit secrets
+# Load credentials
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
 
 st.title("🤖 Ask AI about my Resume")
 
-# Text input area
-user_input = st.text_area("Ask away", height=100)
-submit = st.button("Submit")
+# Layout: text input and submit button
+user_input = st.text_input("Ask away")
+submit = st.button("Send")
 
-# Rate limiting
+# Rate limiting setup
 if "last_query_time" not in st.session_state:
     st.session_state.last_query_time = 0
 
@@ -90,14 +90,14 @@ if submit:
     st.session_state.last_query_time = time.time()
 
     with st.spinner("Thinking..."):
-        # Reuse or create thread
+        # Create or reuse thread
         if "thread_id" not in st.session_state:
             thread = openai.beta.threads.create()
             st.session_state.thread_id = thread.id
         else:
             thread = openai.beta.threads.retrieve(st.session_state.thread_id)
 
-        # Add message
+        # Add user message
         openai.beta.threads.messages.create(
             thread_id=thread.id,
             role="user",
@@ -110,7 +110,7 @@ if submit:
             assistant_id=assistant_id
         )
 
-        # Poll until completion
+        # Poll for response
         while True:
             run_status = openai.beta.threads.runs.retrieve(
                 thread_id=thread.id,
@@ -123,9 +123,10 @@ if submit:
                 break
             time.sleep(1)
 
-        # Show response
+        # Display answer
         messages = openai.beta.threads.messages.list(thread_id=thread.id)
-        response = messages.data[0].content[0].t
+        response = messages.data[0].content[0].text.value
+        st.success(response)
 
 #########################################################################################################################
 
