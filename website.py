@@ -132,6 +132,16 @@ if user_input:
 #########################################################################################################################
 
 
+# Time Series Analysis
+st.title("Time Series Analysis Demo")
+
+# Direct YouTube link
+st.video("https://www.youtube.com/watch?v=lylAIMeAx7s")
+
+
+
+
+
 
 # Email me function
 st.write("")
