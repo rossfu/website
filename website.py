@@ -133,6 +133,9 @@ if user_input:
 
 
 # Time Series Analysis
+st.write("")
+st.write("")
+
 st.title("Time Series Analysis Demo")
 
 # Direct YouTube link
