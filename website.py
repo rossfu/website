@@ -93,13 +93,26 @@ user_input = st.text_input("Ask anything about my resume")
 
 if user_input:
     with st.spinner("Thinking..."):
-        response = client.responses.create(
-            model="gpt-4.1-mini",
-            input=[
-                {"role": "system", "content": prompt_context},
-                {"role": "user", "content": user_input}
-            ]
-        )
+        try:
+            response = client.responses.create(
+                model="gpt-4.1-mini",
+                input=[
+                    {
+                        "role": "system",
+                        "content": prompt_context
+                    },
+                    {
+                        "role": "user",
+                        "content": user_input
+                    }
+                ]
+            )
+
+            answer = response.output_text
+            st.success(answer)
+
+        except Exception as e:
+            st.error(f"API Error: {e}")
 
         answer = response.output_text
         st.success(answer)
