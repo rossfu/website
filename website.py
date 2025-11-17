@@ -109,6 +109,9 @@ if user_input:
             )
 
             answer = response.output_text
+            answer = "".join(block.text for block in response.output_text if hasattr(block, "text")) \
+                    if hasattr(response, "output_text") else \
+                    "".join(item["content"][0]["text"] for item in response.output[0]["content"])
             st.success(answer)
 
         except Exception as e:
