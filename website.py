@@ -61,74 +61,48 @@ st.write("")
 
 # AI #########################################################################################################################
 import openai
-import time
+from openai import OpenAI
 
-# Load credentials from Streamlit secrets
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-assistant_id = st.secrets["OPENAI_ASSISTANT_ID"]
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 st.title("🤖 Ask AI about my Resume")
 
+# Load your resume once
+with open("Eric Fu Resume 2025.pdf", "rb") as f:
+    resume_pdf = f.read()
 
-# Rate limiting: prevent repeated submissions
-if "last_query_time" in st.session_state:
-    if time.time() - st.session_state.last_query_time < 10:
-        st.warning("Please wait a few seconds before asking another question.")
-        st.stop()
+if "resume_text" not in st.session_state:
+    # Convert PDF to text
+    import pypdf
+    reader = pypdf.PdfReader("Eric Fu Resume 2025.pdf")
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+    st.session_state.resume_text = text
 
-# Limit user input length
-user_input = st.text_input("Ask away")
+prompt_context = f"""
+You are an AI assistant answering questions about Eric Ross Fu's resume.
+Here is the resume content:
 
+{st.session_state.resume_text}
 
-if user_input and len(user_input) > 500:
-    st.warning("500 character limit")
-    st.stop()
+Answer user questions accurately and concisely.
+"""
 
+user_input = st.text_input("Ask anything about my resume")
 
-
-# More
 if user_input:
-    st.session_state.last_query_time = time.time()
-
     with st.spinner("Thinking..."):
-        # Reuse thread in session
-        if "thread_id" not in st.session_state:
-            thread = openai.beta.threads.create()
-            st.session_state.thread_id = thread.id
-        else:
-            thread = openai.beta.threads.retrieve(st.session_state.thread_id)
-
-        # Add message to the thread
-        openai.beta.threads.messages.create(
-            thread_id=thread.id,
-            role="user",
-            content=user_input
+        response = client.responses.create(
+            model="gpt-4.1-mini",
+            input=[
+                {"role": "system", "content": prompt_context},
+                {"role": "user", "content": user_input}
+            ]
         )
 
-        # Run assistant
-        run = openai.beta.threads.runs.create(
-            thread_id=thread.id,
-            assistant_id=assistant_id
-        )
-
-        # Poll for completion
-        while True:
-            run_status = openai.beta.threads.runs.retrieve(
-                thread_id=thread.id,
-                run_id=run.id
-            )
-            if run_status.status == "completed":
-                break
-            elif run_status.status == "failed":
-                st.error("Assistant failed to respond.")
-                break
-            time.sleep(1)
-
-        # Show assistant reply
-        messages = openai.beta.threads.messages.list(thread_id=thread.id)
-        response = messages.data[0].content[0].text.value
-        st.success(response)
-
+        answer = response.output_text
+        st.success(answer)
 #########################################################################################################################
 
 
