@@ -6,8 +6,13 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+import openai
+from openai import OpenAI
 
-# Set page config
+
+# =====================================
+# Page Config
+# =====================================
 st.set_page_config(
     page_title="Eric Ross Fu's Data Science Website",
     page_icon="https://github.com/rossfu/website/raw/main/favicon-16x16.png",
@@ -16,25 +21,21 @@ st.set_page_config(
 )
 
 
-# Title
+# =====================================
+# Header
+# =====================================
 st.title("Welcome to Eric Fu's Website!")
-
-
-# Play background music
-#audio_file = open('Survivor - Eye Of The Tiger (Official HD Video).mp3', 'rb')
-#st.audio(audio_file, format='audio/mp3', start_time=0)
-
-
-
-# Spacer
 st.write("")
 
-# Create two columns
-col1,col2 = st.columns(2)
+
+# =====================================
+# Profile Section
+# =====================================
+col1, col2 = st.columns(2)
 
 with col1:
     image_url = "https://github.com/rossfu/website/blob/main/headshot.jpg?raw=true"
-    st.image(image_url, width = 300)
+    st.image(image_url, width=300)
 
 with col2:
     st.subheader("Data Scientist @ Avance Biosciences")
@@ -42,43 +43,39 @@ with col2:
     st.write("https://github.com/rossfu")
     st.write("ericrossfu@yahoo.com")
     st.write("713-540-4528")
-    
-    # Read the file in binary mode
+
     with open("Eric Fu Resume 2025.pdf", "rb") as f:
         pdf_data = f.read()
-    
-    # Download button
+
     st.download_button(
         label="Download my Resume",
         data=pdf_data,
         file_name="resume.pdf",
-        mime="application/pdf"
+        mime="application/pdf",
     )
 
 st.write("")
 st.write("")
 
 
-# AI #########################################################################################################################
-import openai
-from openai import OpenAI
+# =====================================
+# AI Resume Assistant
+# =====================================
+st.title("🤖 Ask AI about my Resume")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-st.title("🤖 Ask AI about my Resume")
-
-# Load your resume once
-with open("Eric Fu Resume 2025.pdf", "rb") as f:
-    resume_pdf = f.read()
-
+# Load and cache resume text
 if "resume_text" not in st.session_state:
-    # Convert PDF to text
     import pypdf
+
     reader = pypdf.PdfReader("Eric Fu Resume 2025.pdf")
-    text = ""
+    resume_text = ""
+
     for page in reader.pages:
-        text += page.extract_text() + "\n"
-    st.session_state.resume_text = text
+        resume_text += page.extract_text() + "\n"
+
+    st.session_state.resume_text = resume_text
 
 prompt_context = f"""
 You are an AI assistant answering questions about Eric Ross Fu's resume.
@@ -97,32 +94,28 @@ if user_input:
             response = client.responses.create(
                 model="gpt-4.1-mini",
                 input=[
-                    {
-                        "role": "system",
-                        "content": prompt_context
-                    },
-                    {
-                        "role": "user",
-                        "content": user_input
-                    }
-                ]
+                    {"role": "system", "content": prompt_context},
+                    {"role": "user", "content": user_input},
+                ],
             )
 
+            # Extract answer ONCE
             answer = response.output_text
-            answer = "".join(block.text for block in response.output_text if hasattr(block, "text")) \
-                    if hasattr(response, "output_text") else \
-                    "".join(item["content"][0]["text"] for item in response.output[0]["content"])
+            if isinstance(answer, list):
+                answer = "".join(
+                    block.text for block in answer if hasattr(block, "text")
+                )
+
             st.success(answer)
 
         except Exception as e:
             st.error(f"API Error: {e}")
 
-        answer = response.output_text
-        st.success(answer)
-#########################################################################################################################
 
+# =====================================
+# Time Series Demo
+# =====================================
 
-# Time Series Analysis
 st.write("")
 st.write("")
 
