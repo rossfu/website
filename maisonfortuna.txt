@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Maison Fortuna</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a0a;
+      color: #e8e8e8;
+      font-family: "Times New Roman", serif;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      max-width: 680px;
+      line-height: 1.6;
+    }
+    a.button {
+      text-decoration: none;
+      font-size: 1.25rem;
+      color: #f2f2f2;
+      border: 2px solid #f2f2f2;
+      padding: 0.85rem 1.8rem;
+      border-radius: 4px;
+      transition: 0.3s ease;
+    }
+    a.button:hover {
+      background-color: #f2f2f2;
+      color: #0a0a0a;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.85rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Maison Fortuna</h1>
+  <p>An existing singular artifact crafted from rare materials and symbolic precision.  
+  This object is not public. If you are curious to explore it further, you may submit an inquiry below — access is limited and granted selectively.</p>
+  <a class="button" href="mailto:inquiries@maisonfortuna.com?subject=Inquiry">Inquire by Email</a>
+
+  <footer>Maison Fortuna. Only one set exists.</footer>
+</body>
+</html>
